@@ -4,6 +4,7 @@ import { HistoryTransController } from './history-trans.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HistoryTran } from './entities/history-tran.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { DITokens } from 'src/di';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [HistoryTransController],
-  providers: [HistoryTransService],
+  providers: [HistoryTransService,{ provide : DITokens.HistoryTransService, useClass: HistoryTransService }],
 })
 export class HistoryTransModule {}

@@ -1,5 +1,8 @@
-import { AccountService } from "src/account/account.service";
+
 
 export const DITokens = {
   AccountService: Symbol('IAccountService'),
+  ActivityService: Symbol('IActivityService'),
+  HeroService: Symbol('IHeroService'),
+  HistoryTransService: Symbol('IHistoryTransService'),
 };
