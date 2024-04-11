@@ -9,6 +9,8 @@ import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Uniqu
 export class Account {
     @PrimaryColumn()
     id:UUID;
+    @Column({nullable:true})
+    avatar:string;
 
     @Column({unique:true})
     username:string;

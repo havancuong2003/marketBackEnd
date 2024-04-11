@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { Account } from "src/account/entities/account.entity";
 import { Activity } from "src/activity/entities/activity.entity";
 import { HistoryTran } from "src/history-trans/entities/history-tran.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 export enum Rank {
     WARRIOR="WARRIOR",
     WARMONGER = "WARMONGER",
@@ -29,6 +29,8 @@ export class Hero {
     id:number;
     @Column({unique:true})
     name:string;
+    @Column({nullable:true})
+    avatar:string;
     @Column()
     rank:Rank;
     @Column()
@@ -51,10 +53,11 @@ export class Hero {
     account_id:UUID;
 
     @ManyToOne(()=>Account,(account)=>account.heroes)
+    @JoinColumn({ name: 'account_id', referencedColumnName: 'id' })
     account:Account;
-    @OneToMany(() => HistoryTran, (historyTran) => historyTran.hero)
+    @OneToMany(() => HistoryTran, (historyTran) => historyTran.hero) 
     historyTran: HistoryTran[];
-
+ 
     @OneToMany(() => Activity, (activity) => activity.hero)
     activities: Activity[];
 
