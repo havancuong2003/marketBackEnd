@@ -11,6 +11,6 @@ import { DITokens } from 'src/di';
     TypeOrmModule.forFeature([Hero]),
   ],
   controllers: [HeroController],
-  providers: [HeroService,{ provide : DITokens.AccountService, useClass: AccountService }],
+  providers: [HeroService,{ provide : DITokens.HeroService, useClass: HeroService }],
 })
 export class HeroModule {}
