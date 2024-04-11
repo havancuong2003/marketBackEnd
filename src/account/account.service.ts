@@ -20,7 +20,9 @@ export class AccountService implements IAccountService {
     return this.accountRepository.find();
   }
   findByUserName(name: string) {
-    throw new Error('Method not implemented.');
+    const user = this.accountRepository.findOneBy({ username: name });
+    if (!user) throw new Error('user not found');
+    return user;
   }
   update(id: number, updateAccountDto: UpdateAccountDto) {
     throw new Error('Method not implemented.');
@@ -35,6 +37,7 @@ export class AccountService implements IAccountService {
     if (!userByEmail) {
       throw new BadRequestException('User not found');
     }
+
     // check matching password
     const isMatch = await bcrypt.compare(
       requestsBody.password,
@@ -59,6 +62,10 @@ export class AccountService implements IAccountService {
     return req.currentUser;
   }
   async register(requestsBody: RegisterAccountDto) {
+    const userByUserName = await this.findByUserName(requestsBody.username);
+    if (userByUserName) {
+      throw new BadRequestException('Username already exists');
+    }
     const user = await this.findByEmail(requestsBody.email);
     if (user) {
       throw new BadRequestException('Email already registered');
