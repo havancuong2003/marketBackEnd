@@ -11,6 +11,8 @@ import { Account } from './account/entities/account.entity';
 import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guard';
 
 @Module({
   
