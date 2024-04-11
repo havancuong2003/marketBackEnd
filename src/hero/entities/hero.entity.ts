@@ -48,7 +48,7 @@ export class Hero {
     @Column()
     price:number;
     @Column()
-    account_id:UUID;;
+    account_id:UUID;
 
     @ManyToOne(()=>Account,(account)=>account.heroes)
     account:Account;
