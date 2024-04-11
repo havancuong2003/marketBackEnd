@@ -4,6 +4,7 @@ import { ActivityController } from './activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { Activity } from './entities/activity.entity';
+import { DITokens } from 'src/di';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { Activity } from './entities/activity.entity';
     }),
   ],
   controllers: [ActivityController],
-  providers: [ActivityService],
+  providers: [ActivityService,{ provide : DITokens.ActivityService, useClass: ActivityService }],
 })
 export class ActivityModule {}
