@@ -24,6 +24,9 @@ export class Account {
 
     @Column({default:0})
     balance:number;
+
+    @Column({nullable:true})
+    refresh_token:string;
     
     @OneToMany(()=>HistoryTran,(ht)=>ht.account_buyer) 
     historyTranSeller:HistoryTran[]

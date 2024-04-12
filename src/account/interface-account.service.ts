@@ -1,11 +1,12 @@
-
-import { LoginDto, RegisterAccountDto } from './dto';
+import { UUID } from 'crypto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-export interface  IAccountService {   
-  update(id: number, updateAccountDto: UpdateAccountDto) ;
-  findByUserName(name:string);
-  login(requestsBody:LoginDto);
-  register(requestsBody:RegisterAccountDto);
+import {  RegisterAccountDto } from './dto';
+import { Account } from './entities';
+export interface IAccountService {
+  findByUserName(name: string);
   findAll();
   findByEmail(email: string);
+  update(id: UUID, updateUserDto: UpdateAccountDto);
+  create(create:RegisterAccountDto);
+  save(account:Account);
 }
