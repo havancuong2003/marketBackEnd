@@ -14,6 +14,6 @@ export interface IHeroService {
     searchHeroMarket(request:SearchHeroDto);
     searchHeroInventory(request: SearchHeroDto, idAccount: string)
     findHeroOwnerByAccountId(idHero:number,account_id: UUID);
-    updatePriceMarket(id: number, price: number,currentUser:Account);
+    updatePriceMarket(id: number, price: number,account_id: UUID);
     updateStatus(id: number, status: number,account_id: UUID)
 }

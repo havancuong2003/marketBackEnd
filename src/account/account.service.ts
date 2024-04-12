@@ -39,11 +39,11 @@ export class AccountService implements IAccountService {
   async update(id: UUID, updateUserDto: UpdateAccountDto) {
     return this.accountRepository.update(id, updateUserDto);
   }
-  create(create:RegisterAccountDto){
-    return this.accountRepository.create(create);
+  async create(create:RegisterAccountDto){
+     return await this.accountRepository.create(create);
   }
-  save(account:Account){
-    return this.accountRepository.save(account);
+  async save(account:Account){
+    return await this.accountRepository.save(account);
   }
   informationAccount(id:UUID){
     return this.accountRepository.findOneBy({ id: id });

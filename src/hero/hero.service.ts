@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
 import { Account } from 'src/account';
+import { Status } from 'src/constains';
 
 @Injectable()
 export class HeroService implements IHeroService {
@@ -49,10 +50,14 @@ export class HeroService implements IHeroService {
     console.log('save hero: ', hero);
     return this.heroRepository.save(hero);
   }
-  async updatePriceMarket(id: number, price: number,currentAccount:Account) { 
-      const hero = await this.findHeroOwnerByAccountId(id, currentAccount.id);
+  async updatePriceMarket(id: number, price: number,account_id: UUID) { 
+      const hero = await this.findHeroOwnerByAccountId(id, account_id);
+      
       if(!hero){
         throw new BadRequestException('You don\'t have hero'); 
+      }
+      if(hero.status != 1){
+        throw new BadRequestException('You need sell hero to market'); 
       }
       return this.heroRepository.update(id, { price: price });
   }
@@ -82,7 +87,7 @@ export class HeroService implements IHeroService {
   async searchHeroMarket(request: SearchHeroDto) {
     console.log(request);
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
-    queryBuilder.where('hero.status = :status', { status: 1 });
+    queryBuilder.where('hero.status = :status', { status: Status.MARKET });
     // Kiểm tra nếu có rank được cung cấp
     if (request.rank) {
       queryBuilder.andWhere('hero.rank = :rank', { rank: request.rank });
@@ -106,7 +111,7 @@ export class HeroService implements IHeroService {
     console.log(request);
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.where('hero.account_id = :id', { id: idAccount });
-    queryBuilder.andWhere('hero.status = :status', { status: 0 });
+    queryBuilder.andWhere('hero.status = :status', { status: Status.INVENTORY });
 
     // Kiểm tra nếu có rank được cung cấp
     if (request.rank) {

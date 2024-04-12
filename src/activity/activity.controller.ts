@@ -7,10 +7,7 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
-  @Post()
-  create(@Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(createActivityDto);
-  }
+ 
 
   @Get()
   findAll() {
