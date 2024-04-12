@@ -3,7 +3,7 @@ import { UUID } from "crypto";
 
 export class CreateAccountDto {
     
-    id:UUID;
+    id?:UUID;
 
     @IsNotEmpty()
     username:string;
@@ -13,4 +13,6 @@ export class CreateAccountDto {
 
     @IsEmail()
     email:string;
+
+    refresh_token : string;
 }
