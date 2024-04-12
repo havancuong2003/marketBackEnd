@@ -9,4 +9,7 @@ export interface IAccountService {
   update(id: UUID, updateUserDto: UpdateAccountDto);
   create(create:RegisterAccountDto);
   save(account:Account);
+  informationAccount(id:UUID);
+  updateUserName(id:UUID,username:string)
+  updatePassWord(id: UUID, password: string)
 }

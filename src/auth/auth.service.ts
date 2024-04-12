@@ -3,7 +3,6 @@ import { BadRequestException, ForbiddenException, Inject, Injectable } from '@ne
 import { Account, IAccountService, LoginDto, RegisterAccountDto } from 'src/account';
 import { DITokens } from 'src/di';
 import * as bcrypt from 'bcrypt';
-import { IMailService } from 'src/mail';
 import { UUID, randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { IAuthService } from './interface-auth.service';
@@ -13,7 +12,6 @@ export class AuthService implements IAuthService {
     @Inject(DITokens.AccountService)
     private readonly accountService: IAccountService,
     private jwtService: JwtService,
-    @Inject(DITokens.MailService) private readonly mailService: IMailService,
     private configService: ConfigService,
   ) {}
   async login(requestsBody: LoginDto) {
@@ -60,7 +58,6 @@ export class AuthService implements IAuthService {
     this.accountService.save(saveUser);
     const tokens = await this.getTokens(saveUser.id, saveUser.username,saveUser.email);
     await this.updateRefreshToken(saveUser.id, tokens.refreshToken);
-    this.mailService.sendUserConfirmation(requestsBody.email);
     return {
       message: 'Register successfully',
       tokens,
@@ -87,7 +84,7 @@ export class AuthService implements IAuthService {
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: '60s',
+          expiresIn: '1h',
         },
       ),
       this.jwtService.signAsync(
