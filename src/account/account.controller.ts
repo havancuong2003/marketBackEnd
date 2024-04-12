@@ -1,27 +1,20 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   Inject,
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
   Req,
-  Request,
+  Body,
+  Post,
 } from '@nestjs/common';
 
-import { UpdateAccountDto } from './dto/update-account.dto';
 import { IAccountService } from './interface-account.service';
 import { DITokens } from 'src/di';
-import { LoginDto, RegisterAccountDto } from './dto';
-import { currentUser } from 'src/decorator';
-import { Account } from './entities';
-import { AuthGuard } from '@nestjs/passport';
 import { AccessTokenGuard } from 'src/guard';
+import { Request } from 'express';
+import { UpdateAccountDto } from './dto';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("/account")
 export class AccountController {
@@ -31,10 +24,38 @@ export class AccountController {
   ) {}
   @UseGuards(AccessTokenGuard)
   @Get()
-  findAll(@Request() req) {
+  findAll(@Req() req:Request) {
     console.log(typeof req);
-    console.log('find all : ', req.user.id);
+    console.log('find all : ', req.user['id']);
     return this.accountService.findAll();
   }
+  @UseGuards(AccessTokenGuard)
+  @Get("/showInformation")
+  showInformation(@Req() req:Request){
+    return this.accountService.informationAccount(req.user['id']);
+  }
+  @UseGuards(AccessTokenGuard)
+  @Post("/updateUserName")
+  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+    if(!updateUserDto.username){
+      return {
+        status:400,
+        message:"username is required"
+      }
+    }
+    return this.accountService.updateUserName(req.user['id'], updateUserDto.username);
+  }
+  @UseGuards(AccessTokenGuard)
+  @Post("/updatePassWord")
+  updatePassWord(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+    if(!updateUserDto.password){
+      return {
+        status:400,
+        message:"password is required"
+      }
+    }
+    return this.accountService.updatePassWord(req.user['id'], updateUserDto.password);
+  }
+
 
 }

@@ -11,7 +11,6 @@ import { Account } from './account/entities/account.entity';
 import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
-import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth';
 @Global()
 @Module({
@@ -37,7 +36,6 @@ import { AuthModule } from './auth';
     ActivityModule,
     HeroModule,
     HistoryTransModule,
-    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

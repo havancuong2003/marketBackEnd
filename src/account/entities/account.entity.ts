@@ -25,6 +25,7 @@ export class Account {
     @Column({default:0})
     balance:number;
 
+    @Exclude()
     @Column({nullable:true})
     refresh_token:string;
     
