@@ -17,11 +17,11 @@ export class AccountService implements IAccountService {
     private jwtService: JwtService,
   ) {}
   findAll() {
-      return this.accountRepository.find();
+    return this.accountRepository.find();
   }
-    findByUserName(name: string) {
-        throw new Error('Method not implemented.');
-    }
+  findByUserName(name: string) {
+    throw new Error('Method not implemented.');
+  }
   update(id: number, updateAccountDto: UpdateAccountDto) {
     throw new Error('Method not implemented.');
   }
@@ -30,60 +30,62 @@ export class AccountService implements IAccountService {
     if (!user) throw new Error('user not found');
     return user;
   }
-  async login(requestsBody:LoginDto) {
+  async login(requestsBody: LoginDto) {
     const userByEmail = await this.findByEmail(requestsBody.email);
-    if(!userByEmail){
-        throw new BadRequestException('User not found');
+    if (!userByEmail) {
+      throw new BadRequestException('User not found');
     }
     // check matching password
-    const isMatch = await bcrypt.compare(requestsBody.password,userByEmail.password);
-    if(!isMatch) throw new BadRequestException("Invalid password");
+    const isMatch = await bcrypt.compare(
+      requestsBody.password,
+      userByEmail.password,
+    );
+    if (!isMatch) throw new BadRequestException('Invalid password');
 
     const payload = {
-        id: userByEmail.id,
-        email: userByEmail.email,
-        username:userByEmail.username
-    }
-    const access_token = await this.jwtService.signAsync(payload,{
-        secret:process.env.JWT_SECRET,
-    })
+      id: userByEmail.id,
+      email: userByEmail.email,
+      username: userByEmail.username,
+    };
+    const access_token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+    });
     return {
-        msg : "User has been login!",
-        access_token
-    }
-
+      msg: 'User has been login!',
+      access_token,
+    };
   }
-  async getCurrentUser(@Request() req){
-      return req.currentUser;
+  async getCurrentUser(@Request() req) {
+    return req.currentUser;
   }
-  async register(requestsBody : RegisterAccountDto){
+  async register(requestsBody: RegisterAccountDto) {
     const user = await this.findByEmail(requestsBody.email);
-    if(user){
-        throw new BadRequestException('Email already registered');
+    if (user) {
+      throw new BadRequestException('Email already registered');
     }
     // generate uuid
     const uuid = randomUUID();
     requestsBody.id = uuid;
     // hash password
     const saltOrRounds = 10;
-    const hashPassword = await bcrypt.hash(requestsBody.password,saltOrRounds);
+    const hashPassword = await bcrypt.hash(requestsBody.password, saltOrRounds);
     requestsBody.password = hashPassword;
     // save to db
-    const saveUser=await this.accountRepository.create(requestsBody);
+    const saveUser = await this.accountRepository.create(requestsBody);
     this.accountRepository.save(saveUser);
 
     // generate jwt
     const payload = {
-        id: saveUser.id,
-        email: saveUser.email,
-        username:saveUser.username
-    }
-    const access_token= await this.jwtService.signAsync(payload,{
-        secret:process.env.JWT_SECRET,
+      id: saveUser.id,
+      email: saveUser.email,
+      username: saveUser.username,
+    };
+    const access_token = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
     });
     return {
-        msg : "User has been created!",
-        access_token
-    }
-}
+      msg: 'User has been created!',
+      access_token,
+    };
+  }
 }
