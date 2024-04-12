@@ -1,98 +1,61 @@
-import { BadRequestException, Injectable, Request } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Request,
+} from '@nestjs/common';
 import { IAccountService } from './interface-account.service';
-import { RegisterAccountDto, UpdateAccountDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities';
 import { Repository } from 'typeorm';
-import { LoginDto } from './dto/login-account.dto';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { RegisterAccountDto, UpdateAccountDto } from './dto';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class AccountService implements IAccountService {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
-    private jwtService: JwtService,
   ) {}
   findAll() {
     return this.accountRepository.find();
   }
-  findByUserName(name: string) {
-    const user = this.accountRepository.findOneBy({ username: name });
+  async findByUserName(name: string) {
+    const user = await this.accountRepository.findOneBy({ username: name });
     if (!user) throw new Error('user not found');
     return user;
   }
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    throw new Error('Method not implemented.');
-  }
-  findByEmail(email: string) {
-    const user = this.accountRepository.findOneBy({ email: email });
+  async findByEmail(email: string) {
+    const user =  await this.accountRepository.findOneBy({ email: email });
     if (!user) throw new Error('user not found');
     return user;
   }
-  async login(requestsBody: LoginDto) {
-    const userByEmail = await this.findByEmail(requestsBody.email);
-    if (!userByEmail) {
-      throw new BadRequestException('User not found');
-    }
-
-    // check matching password
-    const isMatch = await bcrypt.compare(
-      requestsBody.password,
-      userByEmail.password,
-    );
-    if (!isMatch) throw new BadRequestException('Invalid password');
-
-    const payload = {
-      id: userByEmail.id,
-      email: userByEmail.email,
-      username: userByEmail.username,
-    };
-    const access_token = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET,
-    });
-    return {
-      msg: 'User has been login!',
-      access_token,
-    };
-  }
-  async getCurrentUser(@Request() req) {
-    return req.currentUser;
-  }
-  async register(requestsBody: RegisterAccountDto) {
-    const userByUserName = await this.findByUserName(requestsBody.username);
-    if (userByUserName) {
-      throw new BadRequestException('Username already exists');
-    }
-    const user = await this.findByEmail(requestsBody.email);
-    if (user) {
-      throw new BadRequestException('Email already registered');
-    }
-    // generate uuid
-    const uuid = randomUUID();
-    requestsBody.id = uuid;
-    // hash password
+  async updatePassWord(id: UUID, password: string) {
     const saltOrRounds = 10;
-    const hashPassword = await bcrypt.hash(requestsBody.password, saltOrRounds);
-    requestsBody.password = hashPassword;
-    // save to db
-    const saveUser = await this.accountRepository.create(requestsBody);
-    this.accountRepository.save(saveUser);
+    const passwordHash = await bcrypt.hash(password, saltOrRounds);
+    return this.accountRepository.update(id, { password: passwordHash });
+  }
+  async update(id: UUID, updateUserDto: UpdateAccountDto) {
+    return this.accountRepository.update(id, updateUserDto);
+  }
+  create(create:RegisterAccountDto){
+    return this.accountRepository.create(create);
+  }
+  save(account:Account){
+    return this.accountRepository.save(account);
+  }
+  informationAccount(id:UUID){
+    return this.accountRepository.findOneBy({ id: id });
+  }
+  async updateUserName(id:UUID,username:string){
+    const user = await this.accountRepository.findOneBy({ username: username });
+    console.log("updateUserName ",username);
+    console.log("updateUserName ",user);
+    if(user){
+      throw new BadRequestException('username already exist');
+    }
+    return this.accountRepository.update(id,{username:username});
 
-    // generate jwt
-    const payload = {
-      id: saveUser.id,
-      email: saveUser.email,
-      username: saveUser.username,
-    };
-    const access_token = await this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET,
-    });
-    return {
-      msg: 'User has been created!',
-      access_token,
-    };
   }
 }

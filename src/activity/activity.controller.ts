@@ -5,7 +5,7 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 import { IActivityService } from './interface-activity.service';
 import { DITokens } from 'src/di';
 import { Activity } from './entities';
-import { AuthGuard } from 'src/guard';
+import { } from 'src/guard';
 
 @Controller('activity')
 export class ActivityController {
