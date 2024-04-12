@@ -47,4 +47,6 @@ export class AccountController {
   update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
     return this.accountService.update(+id, updateAccountDto);
   }
+
+  
 }

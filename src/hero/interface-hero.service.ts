@@ -13,4 +13,5 @@ export interface IHeroService {
     showListMarket(account_id: UUID);
     searchHeroMarket(request:SearchHeroDto);
     searchHeroInventory(request: SearchHeroDto,account:Account);
+    statusHero(hero_id: number, account: Account);
 }

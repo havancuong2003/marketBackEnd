@@ -26,9 +26,9 @@ export class ActivityController {
     return this.activityService.remove(+id);
   }
 
-  @UseGuards(AuthGuard)
+ // @UseGuards(AuthGuard)
   @Post('getActivites')
   getActivites( @Body() activity : Activity ) {
-    return this.activityService.getActivities(activity.account_id);
+    return this.activityService.getActivities(activity.account_id, activity.event);
   }
 }

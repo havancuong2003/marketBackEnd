@@ -31,9 +31,12 @@ export class ActivityService implements IActivityService {
     return `This action removes a #${id} activity`;
   }
 
-  async getActivities( account_id: string ) {
+  async getActivities( account_id: string, event: string ) {
     const queryBuilder = this.activityRepository.createQueryBuilder('activity');
     queryBuilder.where('activity.account_id = :id', { id: account_id });
+    if(event){
+     queryBuilder.andWhere('activity.event = :event', { event: event });
+    }
     queryBuilder.orderBy('activity.time', 'DESC');
 
     const activities = await queryBuilder.getMany();

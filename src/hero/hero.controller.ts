@@ -3,9 +3,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, R
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
 import { AuthGuard } from 'src/guard';
-import { Account } from 'src/account';
 import { currentUser } from 'src/decorator';
 import { SearchHeroDto } from './dto';
+import { Account } from 'src/account';
+import { Hero } from './entities';
 
 @Controller("hero")
 export class HeroController {
@@ -40,5 +41,11 @@ export class HeroController {
   @Get('detail')
   detailHero(@Query("id") id: number) {
     return this.heroService.findOne(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('statusHero')
+  statusHero(@Body("hero_id") hero_id: number,@currentUser() account: Account) {
+    return this.heroService.statusHero(hero_id,account);
   }
 }

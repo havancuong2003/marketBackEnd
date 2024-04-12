@@ -95,4 +95,17 @@ export class HeroService implements IHeroService {
   remove(id: number): Promise<Hero> {
     throw new Error('Method not implemented.');
   }
+
+  async statusHero(hero_id: number, account: Account)
+  {
+     const hero = await  this.findOne(hero_id);
+
+    if(hero.account_id != account.id)
+    {
+      return{
+        status: "Buy",
+      }
+    }
+      return hero.status?{ status:"Delist" }:{ status:"Sell" }  
+  }
 }
