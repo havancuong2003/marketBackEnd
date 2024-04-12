@@ -6,4 +6,5 @@ export interface IActivityService {
     findOne(id: number);
     update(id: number, updateActivityDto: UpdateActivityDto);
     remove(id: number);
+    getActivities(id:string);
 }

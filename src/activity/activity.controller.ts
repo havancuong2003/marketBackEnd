@@ -1,25 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query, UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { IActivityService } from './interface-activity.service';
+import { DITokens } from 'src/di';
+import { Activity } from './entities';
+import { AuthGuard } from 'src/guard';
 
 @Controller('activity')
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) {}
+  constructor( @Inject(DITokens.ActivityService) private readonly activityService: IActivityService ) {}
 
   @Post()
   create(@Body() createActivityDto: CreateActivityDto) {
     return this.activityService.create(createActivityDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.activityService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.activityService.findOne(+id);
   }
 
   @Patch(':id')
@@ -30,5 +24,11 @@ export class ActivityController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.activityService.remove(+id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('getActivites')
+  getActivites( @Body() activity : Activity ) {
+    return this.activityService.getActivities(activity.account_id);
   }
 }
