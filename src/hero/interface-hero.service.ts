@@ -5,7 +5,7 @@ import { Account } from "src/account";
 
 export interface IHeroService {
     findAll(): Promise<Hero[]>;
-    findOne(id: number): Promise<Hero>;
+    checkHeroOwner(id: number, account: Account)
     create(createHeroDto: CreateHeroDto): Promise<Hero>;
     update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero>;
     remove(id: number): Promise<Hero>;
@@ -13,4 +13,7 @@ export interface IHeroService {
     showListMarket(account_id: UUID);
     searchHeroMarket(request:SearchHeroDto);
     searchHeroInventory(request: SearchHeroDto,account:Account);
+    findHeroOwnerByAccountId(idHero:number,account_id: UUID);
+    updatePriceMarket(id: number, price: number,currentUser:Account);
+    updateStatus(id: number, status: number,currentAccount:Account); 
 }

@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { currentUser } from 'src/decorator';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
 import { IHeroService } from './interface-hero.service';
@@ -14,10 +15,33 @@ export class HeroService implements IHeroService {
   constructor(
     @InjectRepository(Hero) private heroRepository: Repository<Hero>,
   ) {}
+  update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero> {
+    throw new Error('Method not implemented.');
+  }
+  async findHeroOwnerByAccountId(idHero:number,account_id: UUID) {
+    return await this.heroRepository
+      .createQueryBuilder('hero')
+      .where('hero.account_id = :idAcc', { idAcc: account_id })
+      .andWhere('hero.id = :id',{id:idHero}).getOne();
+  }
+  async checkHeroOwner(id: number, account: Account) {
+    const hero = await this.findHeroOwnerByAccountId(id, account.id);
+    console.log("Check Hero Owner: ",account.id)
+    console.log(hero)
+    if (!hero) {
+      return {
+        checkOwner: false
+      }
+    }else {
+      return {
+        checkOwner: true
+      }
+    }
+  }
   findAll(): Promise<Hero[]> {
     throw new Error('Method not implemented.');
   }
-  findOne(id: number): Promise<Hero> {
+  findOne(id: number) {
     throw new Error('Method not implemented.');
   }
   create(createHeroDto: CreateHeroDto) {
@@ -25,9 +49,20 @@ export class HeroService implements IHeroService {
     console.log('save hero: ', hero);
     return this.heroRepository.save(hero);
   }
-  update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero> {
-    throw new Error('Method not implemented.');
+  async updatePriceMarket(id: number, price: number,currentAccount:Account) { 
+      const hero = await this.findHeroOwnerByAccountId(id, currentAccount.id);
+      if(!hero){
+        throw new BadRequestException('You don\'t have hero'); 
+      }
+      return this.heroRepository.update(id, { price: price });
   }
+  async updateStatus(id: number, status: number,currentAccount:Account) { 
+    const hero = await this.findHeroOwnerByAccountId(id, currentAccount.id);
+    if(!hero){
+      throw new BadRequestException('You don\'t have hero'); 
+    }
+    return this.heroRepository.update(id, { status: status });
+}
   async showInventory(account_id: UUID) {
     const heros = await this.heroRepository
       .createQueryBuilder('hero')
@@ -47,7 +82,7 @@ export class HeroService implements IHeroService {
   async searchHeroMarket(request: SearchHeroDto) {
     console.log(request);
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
-    queryBuilder.where('hero.status = :status', { status: 1});
+    queryBuilder.where('hero.status = :status', { status: 1 });
     // Kiểm tra nếu có rank được cung cấp
     if (request.rank) {
       queryBuilder.andWhere('hero.rank = :rank', { rank: request.rank });
@@ -66,12 +101,13 @@ export class HeroService implements IHeroService {
     const heros = await queryBuilder.getMany();
     return heros;
   }
-  async searchHeroInventory(request: SearchHeroDto,account:Account){
+  // Hero đã sở hữu
+  async searchHeroInventory(request: SearchHeroDto, account: Account) {
     console.log(request);
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.where('hero.account_id = :id', { id: account.id });
-    queryBuilder.andWhere('hero.status = :status', { status: 0});
-    
+    queryBuilder.andWhere('hero.status = :status', { status: 0 });
+
     // Kiểm tra nếu có rank được cung cấp
     if (request.rank) {
       queryBuilder.andWhere('hero.rank = :rank', { rank: request.rank });

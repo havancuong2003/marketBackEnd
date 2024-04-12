@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Request } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Request } from '@nestjs/common';
 import { IAccountService } from './interface-account.service';
 import { RegisterAccountDto, UpdateAccountDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { LoginDto } from './dto/login-account.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
+import { DITokens } from 'src/di';
+import { IMailService } from 'src/mail';
 
 @Injectable()
 export class AccountService implements IAccountService {
@@ -15,6 +17,7 @@ export class AccountService implements IAccountService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private jwtService: JwtService,
+    @Inject(DITokens.MailService) private readonly mailService: IMailService
   ) {}
   findAll() {
     return this.accountRepository.find();
@@ -90,6 +93,7 @@ export class AccountService implements IAccountService {
     const access_token = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET,
     });
+    this.mailService.sendUserConfirmation(requestsBody.email);
     return {
       msg: 'User has been created!',
       access_token,

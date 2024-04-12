@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AccountModule } from './account/account.module';
@@ -13,11 +13,12 @@ import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guard';
-
+import { MailModule } from './mail/mail.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+@Global()
 @Module({
-  
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -26,15 +27,18 @@ import { AuthGuard } from './guard';
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE_NAME'), 
-        entities: [
-          Account,Activity,Hero,HistoryTran
-        ],
+        database: configService.get('DB_DATABASE_NAME'),
+        entities: [Account, Activity, Hero, HistoryTran],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    AccountModule, ActivityModule, HeroModule, HistoryTransModule],
+    AccountModule,
+    ActivityModule,
+    HeroModule,
+    HistoryTransModule,
+    MailModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
