@@ -6,4 +6,5 @@ export const DITokens = {
   HeroService: Symbol('IHeroService'),
   HistoryTransService: Symbol('IHistoryTransService'),
   MailService: Symbol('IMailService'),
+  AuthService: Symbol('IAuthService'),
 };

@@ -1,11 +1,12 @@
 import { IHeroService } from './interface-hero.service';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, Request,Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards,Query, ParseIntPipe, Req } from '@nestjs/common';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
-import { AuthGuard } from 'src/guard';
+import { AccessTokenGuard } from 'src/guard';
 import { Account } from 'src/account';
 import { currentUser } from 'src/decorator';
 import { SearchHeroDto } from './dto';
+import { Request } from 'express';
 
 @Controller("hero")
 export class HeroController {
@@ -30,22 +31,23 @@ export class HeroController {
   searchHeroMarket(@Body() request:SearchHeroDto) {
     return this.heroService.searchHeroMarket(request);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Get("/checkOwner")
-  checkOwner(@Query("id",ParseIntPipe) idHero: number, @currentUser() account:Account) {
+  checkOwner(@Query("id",ParseIntPipe) idHero: number,@Req()req:Request) {
     console.log("idHero",idHero)
-    return this.heroService.checkHeroOwner(idHero,account);
+    return this.heroService.checkHeroOwner(idHero,req.user['id']);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Post("/inventory")
-  searchHeroInventory(@Body() request:SearchHeroDto,@currentUser() account:Account) {
-    return this.heroService.searchHeroInventory(request,account);
+  searchHeroInventory(@Body() requestBody:SearchHeroDto,@Req()req:Request) {
+    console.log(req.user['id']);
+    return this.heroService.searchHeroInventory(requestBody,req.user['id']);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AccessTokenGuard)
   @Post("updatePrice")
-  updatePriceMarket(@Query("id",ParseIntPipe) id: number, @Body("price",ParseIntPipe) price: number,@currentUser() account:Account) {
-    return this.heroService.updatePriceMarket(id, price,account);
+  updatePriceMarket(@Query("id",ParseIntPipe) id: number, @Body("price",ParseIntPipe) price: number,@Req()req:Request) {
+    return this.heroService.updatePriceMarket(id, price,req.user['id']);
   }
   
 }

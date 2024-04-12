@@ -11,14 +11,13 @@ import { Account } from './account/entities/account.entity';
 import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './guard';
 import { MailModule } from './mail/mail.module';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { AuthModule } from './auth';
 @Global()
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -33,6 +32,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     AccountModule,
     ActivityModule,
     HeroModule,

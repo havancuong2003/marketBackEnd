@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
         throw new ForbiddenException('Please provide access token');
       }
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_ACCESS_SECRET,
       });
       // 3) find user in database on jwtVerify
       console.log('Auth: ', payload);
