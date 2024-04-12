@@ -4,6 +4,14 @@ import { Hero } from 'src/hero/entities/hero.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 import { CreateDateColumn } from 'typeorm';
+  
+
+export enum Event{
+    LIST="LIST",
+    UNLUST="UNLUST",
+    SALE="SALE",
+    PURCHASE="PURCHASE",
+}
 
 @Entity({ name: "Activity" })
 export class Activity {
@@ -13,7 +21,7 @@ export class Activity {
     @Column()
     event: string;
 
-    @Column()
+    @Column( )
     value: number;
 
     @CreateDateColumn()
@@ -22,11 +30,12 @@ export class Activity {
     @Column()
     account_id: UUID;
 
-    @Column()
+    @Column({nullable:false})
     opposite_user_id: UUID;
 
     @Column()
     hero_id: number;
+
 
     @ManyToOne(() => Account, (user) => user.activities)
     @JoinColumn({ name: 'account_id', referencedColumnName: 'id' })

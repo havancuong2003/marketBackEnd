@@ -1,5 +1,5 @@
 import { IHeroService } from './interface-hero.service';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, UseGuards, Request, Query } from '@nestjs/common';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
 import { AuthGuard } from 'src/guard';
@@ -9,6 +9,7 @@ import { SearchHeroDto } from './dto';
 
 @Controller("hero")
 export class HeroController {
+  
   constructor(@Inject(DITokens.HeroService) private  heroService: IHeroService) {}
   @Post("create")
   create(@Body() createHeroDto: CreateHeroDto) {
@@ -36,4 +37,8 @@ export class HeroController {
     return this.heroService.searchHeroInventory(request,account);
   }
   
+  @Get('detail')
+  detailHero(@Query("id") id: number) {
+    return this.heroService.findOne(id);
+  }
 }

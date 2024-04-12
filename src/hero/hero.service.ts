@@ -17,14 +17,15 @@ export class HeroService implements IHeroService {
   findAll(): Promise<Hero[]> {
     throw new Error('Method not implemented.');
   }
-  findOne(id: number): Promise<Hero> {
-    throw new Error('Method not implemented.');
+  async findOne(id: number): Promise<Hero> {
+    return await this.heroRepository.findOneBy({ id });
   }
   create(createHeroDto: CreateHeroDto) {
     const hero = this.heroRepository.create(createHeroDto);
     console.log('save hero: ', hero);
     return this.heroRepository.save(hero);
   }
+  
   update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero> {
     throw new Error('Method not implemented.');
   }
@@ -66,6 +67,7 @@ export class HeroService implements IHeroService {
     const heros = await queryBuilder.getMany();
     return heros;
   }
+  
   async searchHeroInventory(request: SearchHeroDto,account:Account){
     console.log(request);
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');

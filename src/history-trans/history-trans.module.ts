@@ -9,10 +9,10 @@ import { DITokens } from 'src/di';
 @Module({
   imports: [
     TypeOrmModule.forFeature([HistoryTran]),
-    JwtModule.register({
-      global: true,
-      signOptions: { expiresIn: '1d' },
-    }),
+    // JwtModule.register({
+    //   global: true,
+    //   signOptions: { expiresIn: '1d' },
+    // }),
   ],
   controllers: [HistoryTransController],
   providers: [HistoryTransService,{ provide : DITokens.HistoryTransService, useClass: HistoryTransService }],

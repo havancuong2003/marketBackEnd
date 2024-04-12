@@ -30,7 +30,7 @@ import { AuthGuard } from './guard';
         entities: [
           Account,Activity,Hero,HistoryTran
         ],
-        synchronize: true,
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
