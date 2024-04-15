@@ -47,7 +47,7 @@ export class HeroController {
   //   console.log("listMarket: ",account.id);
   //   return this.heroService.showListMarket(account.id);
   // }
-  @Post('/list-market')
+  @Get('/show-market')
   searchHeroMarket(@Body() request: SearchHeroDto) {
     return this.heroService.searchHeroMarket(request);
   }
@@ -58,7 +58,7 @@ export class HeroController {
     return this.heroService.checkHeroOwner(idHero, req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Get('/inventory')
+  @Get('/show-inventory')
   searchHeroInventory(@Param() requestBody: SearchHeroDto, @Req() req: Request) {
     return this.heroService.searchHeroInventory(requestBody, req.user['id']);
   }
