@@ -14,14 +14,16 @@ import { IAccountService } from './interface-account.service';
 import { DITokens } from 'src/di';
 import { AccessTokenGuard } from 'src/guard';
 import { Request } from 'express';
-import { LoginDto, RegisterAccountDto, UpdateAccountDto } from './dto';
+import { UpdateAccountDto } from './dto';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("/account")
 export class AccountController {
   constructor(
     @Inject(DITokens.AccountService)
     private readonly accountService: IAccountService,
+    
   ) {}
+  @UseGuards(AccessTokenGuard)
   @Get()
   findAll(@Req() req:Request) {
     console.log(typeof req);
@@ -55,4 +57,6 @@ export class AccountController {
     }
     return this.accountService.updatePassWord(req.user['id'], updateUserDto.password);
   }
+
+
 }

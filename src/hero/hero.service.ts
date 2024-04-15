@@ -1,4 +1,4 @@
-import { currentUser } from 'src/decorator';
+
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
@@ -12,13 +12,16 @@ import { Account,IAccountService } from 'src/account';
 import { DITokens } from 'src/di';
 import { Status } from 'src/constraint';
 import { IHistoryTransService } from 'src/history-trans';
+import { IActivityService } from 'src/activity';
 
 @Injectable()
 export class HeroService implements IHeroService {
   constructor(
     @InjectRepository(Hero) private heroRepository: Repository<Hero>,
     @Inject(DITokens.AccountService) private accountService: IAccountService,
-    @Inject(DITokens.HistoryTransService) private historyTransService: IHistoryTransService
+    @Inject(DITokens.HistoryTransService) private historyTransService: IHistoryTransService,
+    @Inject(DITokens.ActivityService)
+    private readonly activityService: IActivityService,
   ) {}
   update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero> {
     throw new Error('Method not implemented.');
@@ -72,6 +75,7 @@ export class HeroService implements IHeroService {
     }
     return this.heroRepository.update(id, { status: status });
 }
+
   async showInventory(account_id: UUID) {
     const heros = await this.heroRepository
       .createQueryBuilder('hero')
@@ -177,7 +181,9 @@ export class HeroService implements IHeroService {
     hero.account_id = account.id;
     hero.status = Status.INVENTORY;
     hero.price = 0;
-    this.heroRepository.update(heroId, hero); 
+    this.heroRepository.update(heroId, hero);
+    await this.activityService.createBuyHero({value: sellPrice,hero_id:heroId,account_id:accountId,opposite_user_id:seller})
+    await this.activityService.createSellHero({value: sellPrice,hero_id:heroId,account_id:seller,opposite_user_id:accountId})
     
     // inset to historyTrans
     return this.historyTransService.create({

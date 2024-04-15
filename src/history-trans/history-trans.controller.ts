@@ -12,30 +12,7 @@ export class HistoryTransController {
   @Post()
   create(@Body() createHistoryTranDto: CreateHistoryTranDto) {
     return this.historyTransService.create(createHistoryTranDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.historyTransService.findAll();
-  }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.historyTransService.findOne(+id);
-  // }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHistoryTranDto: UpdateHistoryTranDto) {
-    return this.historyTransService.update(+id, updateHistoryTranDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.historyTransService.remove(+id);
-  }
-  
-
-
+  }  
   @Get(":id/top-trans")
   async getTopTrans(@Param('id') id: number) {
     return await this.historyTransService.getTopTrans(id);

@@ -7,12 +7,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { CreateDateColumn } from 'typeorm';
   
 
-export enum Event{
-    LIST="LIST",
-    UNLUST="UNLUST",
-    SALE="SALE",
-    PURCHASE="PURCHASE",
-}
 
 @Entity({ name: "Activity" })
 export class Activity {

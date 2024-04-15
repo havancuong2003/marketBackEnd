@@ -7,7 +7,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Inject,
   UseGuards,
   Query,
@@ -17,13 +16,9 @@ import {
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
 import { AccessTokenGuard } from 'src/guard';
-import { Account, CreateAccountDto } from 'src/account';
-import { currentUser } from 'src/decorator';
 import { SearchHeroDto } from './dto';
 import { Request } from 'express';
 import {  IActivityService } from 'src/activity';
-import { Event } from 'src/constains';
-import { Hero } from './entities';
 
 @Controller('hero')
 export class HeroController {
@@ -99,23 +94,4 @@ export class HeroController {
      await this.heroService.updateStatus(id, 0, userId);
      return await this.activityService.createDelistMarket(id,userId)
   }
-  
-  @Get(':id/detail')
-  detailHero(@Param('id') id: number) {
-    return this.heroService.findOne(id);
-  }
-
-  @UseGuards(AccessTokenGuard)
-  @Post('statusHero')
-  statusHero(@Body("hero_id") hero_id: number,@Req()req:Request  ) {
-    return this.heroService.statusHero(hero_id,req.user['id']);
-  }
-
-  @UseGuards(AccessTokenGuard)
-  @Patch(':id/buy')
-  buy(@Req() req:Request, @Param('id') id: number) {
-    return this.heroService.buy(id, req.user['id']);
-  }
-
-  
 }

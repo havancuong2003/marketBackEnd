@@ -1,4 +1,5 @@
-import { Class, Race, Rank } from "../entities";
+import { Class, Race, Rank } from "src/constains";
+
 
 export class SearchHeroDto{
     rank:Rank;

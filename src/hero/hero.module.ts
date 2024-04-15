@@ -6,7 +6,7 @@ import { Hero } from './entities/hero.entity';
 import { DITokens } from 'src/di';
 import { Account, AccountService } from 'src/account';
 import { HistoryTran, HistoryTransService } from 'src/history-trans';
-import { Activity } from 'src/activity';
+import { Activity, ActivityService } from 'src/activity';
 
 
 @Module({
