@@ -64,4 +64,9 @@ export class AccountService implements IAccountService {
     return this.accountRepository.update(id,{username:username});
 
   }
+  async updateAvatar(id:UUID,avatar:string){
+    return await this.accountRepository.update(id,{avatar:avatar});
+  }
+
+  
 }
