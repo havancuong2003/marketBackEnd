@@ -106,14 +106,14 @@ export class HeroController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Post('statusHero')
-  statusHero(@Body("hero_id") hero_id: number,@Req()req:Request  ) {
+  @Get(':id/status')
+  statusHero(@Param('id') hero_id: number,@Req()req:Request  ) {
     return this.heroService.statusHero(hero_id,req.user['id']);
   }
 
   @UseGuards(AccessTokenGuard)
   @Patch(':id/buy')
-  buy(@Req() req:Request, @Param('id') id: number) {
+  buy( @Param('id') id: number,@Req() req:Request) {
     return this.heroService.buy(id, req.user['id']);
   }
 

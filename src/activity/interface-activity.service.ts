@@ -8,5 +8,5 @@ export interface IActivityService {
     remove(id: number);
     createListMarket(hero_id:number,account_id:UUID,value:number)
     createDelistMarket(hero_id:number,account_id:UUID)
-    getActivities(id:string,event:string);
+    getActivities(event:string, account_id:UUID);
 }

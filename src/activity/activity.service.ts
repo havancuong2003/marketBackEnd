@@ -1,4 +1,3 @@
-import { Activity } from 'src/activity/entities/activity.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -21,7 +20,6 @@ export class ActivityService implements IActivityService {
   }
   createDelistMarket(hero_id:number,account_id:UUID) {
     return this.activityRepository.createQueryBuilder().insert().into(Activity).values({hero_id:hero_id,account_id:account_id,event:Event.DELIST}).execute();
-    
  }
 
   findAll() {
@@ -40,12 +38,17 @@ export class ActivityService implements IActivityService {
     return `This action removes a #${id} activity`;
   }
 
-  async getActivities( account_id: string, event: string ) {
+  async getActivities( event: string, account_id:UUID) {
+
+    console.log(event)
+    console.log(account_id)
     const queryBuilder = this.activityRepository.createQueryBuilder('activity');
     queryBuilder.where('activity.account_id = :id', { id: account_id });
+
     if(event){
      queryBuilder.andWhere('activity.event = :event', { event: event });
     }
+
     queryBuilder.orderBy('activity.time', 'DESC');
 
     const activities = await queryBuilder.getMany();
