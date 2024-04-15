@@ -96,6 +96,6 @@ export class HeroController {
   ) {
     const userId = req.user['id']
      await this.heroService.updateStatus(id, 0, userId);
-     return this.activityService.createDelistMarket(id,userId)
+     return await this.activityService.createDelistMarket(id,userId)
   }
 }
