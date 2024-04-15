@@ -10,24 +10,12 @@ import { Request } from 'express';
 
 @Controller('activity')
 export class ActivityController {
-  constructor( @Inject(DITokens.ActivityService) private readonly activityService: IActivityService ) {}
-
- 
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto) {
-    return this.activityService.update(+id, updateActivityDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.activityService.remove(+id);
-  }
+  constructor(private readonly activityService: ActivityService) {}
   
   @UseGuards(AccessTokenGuard)
   @Get()
-  getActivity(@Param('event') event: string, @Req() req: Request ) {
-    return this.activityService.getActivities( event, req.user['id']);
+  getActivity( @Req() req: Request ) {
+    return this.activityService.getActivities( "", req.user['id']);
   }
 
 

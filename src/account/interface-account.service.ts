@@ -11,5 +11,5 @@ export interface IAccountService {
   save(account:Account);
   informationAccount(id:UUID);
   updateUserName(id:UUID,username:string)
-  updatePassWord(id: UUID, password: string)
+  updatePassWord(id: UUID, password: string, currentPassword:string)
 }

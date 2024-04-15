@@ -24,7 +24,7 @@ import { AuthModule } from './auth';
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
+        password: configService.get('DB_PASSWORD'), 
         database: configService.get('DB_DATABASE_NAME'), 
         entities: [
           Account,Activity,Hero,HistoryTran

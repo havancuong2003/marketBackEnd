@@ -28,3 +28,6 @@ export enum Status{
     INVENTORY = 0,
     MARKET = 1
 }
+
+export enum Sort{
+}

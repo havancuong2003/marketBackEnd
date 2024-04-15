@@ -2,7 +2,6 @@ import { UUID } from "crypto";
 
 
 export class CreateActivityDto {
-    id?: number;
 
     event: string;
 

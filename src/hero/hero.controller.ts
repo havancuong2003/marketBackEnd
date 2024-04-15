@@ -7,7 +7,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Inject,
   UseGuards,
   Query,
@@ -17,13 +16,9 @@ import {
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
 import { AccessTokenGuard } from 'src/guard';
-import { Account, CreateAccountDto } from 'src/account';
-import { currentUser } from 'src/decorator';
 import { SearchHeroDto } from './dto';
 import { Request } from 'express';
 import {  IActivityService } from 'src/activity';
-import { Event } from 'src/constains';
-import { Hero } from './entities';
 
 @Controller('hero')
 export class HeroController {
@@ -97,7 +92,7 @@ export class HeroController {
   ) {
     const userId = req.user['id']
      await this.heroService.updateStatus(id, 0, userId);
-     return this.activityService.createDelistMarket(id,userId)
+     return await this.activityService.createDelistMarket(id,userId)
   }
   
   @Get(':id/detail')
