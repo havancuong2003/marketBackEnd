@@ -5,10 +5,10 @@ export enum Rank {
     CHIEFTAIN ="CHIEFTAIN",
 }
 export enum Race {
-    ANTUK ="ANTUK ",
-    KRAKEE  = "KRAKEE ",
-    MANTAH  = "MANTAH ",
-    MONTAK  ="MONTAK ",
+    ANTUK ="ANTUK",
+    KRAKEE  = "KRAKEE",
+    MANTAH  = "MANTAH",
+    MONTAK  ="MONTAK",
     MUU="MUU",
 }
 export enum Class{
@@ -29,5 +29,19 @@ export enum Status{
     MARKET = 1
 }
 
-export enum Sort{
+export enum SortInventory{
+    PRICEASC="PRICEASC",
+    PRICEDESC="PRICEDESC", 
+    RANKASC="RANKASC",
+    RANKDESC="RANKDESC",
+    HIGHESTID="HIGHESTID",
+    LOWESTID="LOWESTID",
+}
+
+export enum SortMarket{
+    HIGHESTPRICE="HIGHESTPRICE",
+    LOWESTPRICE="LOWESTPRICE", 
+    RANKASC="RANKASC",
+    RANKDESC="RANKDESC",
+    RECENTLY="RECENTLY",
 }

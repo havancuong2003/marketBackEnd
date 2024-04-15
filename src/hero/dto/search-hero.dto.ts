@@ -1,9 +1,10 @@
-import { Class, Race, Rank, Sort } from "src/constains";
+import { Class, Race, Rank, SortInventory,SortMarket } from "src/constains";
 
 
 export class SearchHeroDto{
     rank:Rank;
     race:Race;
     class:Class;
-    sort:Sort;
+    sortInventory:SortInventory;
+    sortMarket: SortMarket;
 }

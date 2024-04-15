@@ -44,7 +44,7 @@ export class HeroController {
   //   return this.heroService.showListMarket(account.id);
   // }
   @Get('/show-market')
-  searchHeroMarket(@Body() request: SearchHeroDto) {
+  searchHeroMarket(@Query() request: SearchHeroDto) {
     return this.heroService.searchHeroMarket(request);
   }
   @UseGuards(AccessTokenGuard)
@@ -55,13 +55,13 @@ export class HeroController {
   }
   @UseGuards(AccessTokenGuard)
   @Get('/show-inventory')
-  searchHeroInventory(@Param() requestBody: SearchHeroDto, @Req() req: Request) {
+  searchHeroInventory(@Query() requestBody: SearchHeroDto, @Req() req: Request) {
     return this.heroService.searchHeroInventory(requestBody, req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Patch('update-price')
+  @Patch(':id/update-price')
   async updatePriceMarket(
-    @Query('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body('price', ParseIntPipe) price: number,
     @Req() req: Request,
   ) {
