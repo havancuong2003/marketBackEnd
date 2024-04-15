@@ -11,10 +11,7 @@ import { } from 'src/guard';
 export class ActivityController {
   constructor( @Inject(DITokens.ActivityService) private readonly activityService: IActivityService ) {}
 
-  @Post()
-  create(@Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(createActivityDto);
-  }
+ 
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto) {
