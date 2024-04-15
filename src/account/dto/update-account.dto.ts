@@ -12,4 +12,6 @@ export class UpdateAccountDto {
     email?:string;
 
     refresh_token?: string;
+
+    balance?:number;
 }

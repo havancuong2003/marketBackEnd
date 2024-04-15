@@ -36,8 +36,8 @@ export class HistoryTransController {
   
 
 
-  @Get("top_trans")
-  async getTopTrans(@Query("id") id: number) {
+  @Get(":id/top-trans")
+  async getTopTrans(@Param('id') id: number) {
     return await this.historyTransService.getTopTrans(id);
   }
 }

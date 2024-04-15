@@ -52,8 +52,8 @@ export class HeroController {
     return this.heroService.updatePriceMarket(id, price,req.user['id']);
   }
   
-  @Get('detail')
-  detailHero(@Query("id") id: number) {
+  @Get(':id/detail')
+  detailHero(@Param('id') id: number) {
     return this.heroService.findOne(id);
   }
 
@@ -62,4 +62,12 @@ export class HeroController {
   statusHero(@Body("hero_id") hero_id: number,@Req()req:Request  ) {
     return this.heroService.statusHero(hero_id,req.user['id']);
   }
+
+  @UseGuards(AccessTokenGuard)
+  @Patch(':id/buy')
+  buy(@Req() req:Request, @Param('id') id: number) {
+    return this.heroService.buy(id, req.user['id']);
+  }
+
+  
 }

@@ -13,7 +13,7 @@ export class HistoryTransService implements IHistoryTransService {
   ){};
 
   create(createHistoryTranDto: CreateHistoryTranDto) {
-    return 'This action adds a new historyTran';
+    return this.historyTranRepository.save(createHistoryTranDto);
   }
 
   findAll() {

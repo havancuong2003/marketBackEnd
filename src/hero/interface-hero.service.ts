@@ -18,4 +18,5 @@ export interface IHeroService {
     updatePriceMarket(id: number, price: number,currentUser:Account);
     updateStatus(id: number, status: number,account_id: UUID)
     searchHeroInventory(request: SearchHeroDto, idAccount: string);
+    buy(id: number, accountId: UUID)
 }

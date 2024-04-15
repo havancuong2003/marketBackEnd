@@ -22,8 +22,6 @@ export class AccountController {
     @Inject(DITokens.AccountService)
     private readonly accountService: IAccountService,
   ) {}
-   @Post('/login')
-  @UseGuards(AccessTokenGuard)
   @Get()
   findAll(@Req() req:Request) {
     console.log(typeof req);

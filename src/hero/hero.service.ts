@@ -1,5 +1,5 @@
 import { currentUser } from 'src/decorator';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { UpdateHeroDto } from './dto/update-hero.dto';
 import { IHeroService } from './interface-hero.service';
@@ -8,12 +8,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
-import { Account } from 'src/account';
+import { Account,IAccountService } from 'src/account';
+import { DITokens } from 'src/di';
+import { Status } from 'src/constraint';
+import { IHistoryTransService } from 'src/history-trans';
 
 @Injectable()
 export class HeroService implements IHeroService {
   constructor(
     @InjectRepository(Hero) private heroRepository: Repository<Hero>,
+    @Inject(DITokens.AccountService) private accountService: IAccountService,
+    @Inject(DITokens.HistoryTransService) private historyTransService: IHistoryTransService
   ) {}
   update(id: number, updateHeroDto: UpdateHeroDto): Promise<Hero> {
     throw new Error('Method not implemented.');
@@ -143,4 +148,41 @@ export class HeroService implements IHeroService {
     }
       return hero.status?{ status:"Delist" }:{ status:"Sell" }  
   }
+
+
+  async buy(heroId: number, accountId: UUID) {
+      const account =  await this.accountService.informationAccount(accountId);
+      const hero = await this.findOne(heroId);
+    console.log(account);
+    console.log(hero);
+
+    if(hero.status == Status.INVENTORY  )
+    {
+      return { message: "Hero Not Selling"};
+    }
+    if(account.money < hero.price)
+    {
+      return { message: "Not enough money" } ;
+    }
+
+    account.balance = account.balance - hero.price;
+    this.accountService.update(accountId, account);
+
+    const seller = hero.account_id;
+    const sellPrice = hero.price;
+
+    hero.account_id = account.id;
+    hero.status = Status.INVENTORY;
+    hero.price = 0;
+    this.heroRepository.update(heroId, hero); 
+    
+    // inset to historyTrans
+    return this.historyTransService.create({
+      value: sellPrice,
+      seller: seller,
+      buyer: account.id,
+      hero_id: heroId,
+    })
+  }
+
 }
