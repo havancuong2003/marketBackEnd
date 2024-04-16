@@ -208,7 +208,7 @@ export class HeroService implements IHeroService {
     if (hero.status == Status.INVENTORY) {
       return { message: 'Hero Not Selling' };
     }
-    if (account.money < hero.price) {
+    if (account.balance < hero.price) {
       return { message: 'Not enough money' };
     }
 
