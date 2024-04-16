@@ -8,8 +8,9 @@ import {
   Req,
   Body,
   Post,
-  UploadedFile,
+  UploadedFiles,
   BadRequestException,
+  UploadedFile,
 } from '@nestjs/common';
 
 import { IAccountService } from './interface-account.service';
@@ -80,6 +81,13 @@ export class AccountController {
       return {
         status: 400,
         message: 'password not change',
+      };
+    }
+
+    if (updateUserPassDto.password !== updateUserPassDto.repassword) {
+      return {
+        status: 400,
+        message: 'password is required',
       };
     }
 

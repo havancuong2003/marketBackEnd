@@ -10,7 +10,7 @@ export interface IAccountService {
   create(create: RegisterAccountDto);
   save(account: Account);
   informationAccount(id: UUID);
-  updateUserName(id: UUID, username: string);
   updateAvatar(id: UUID, avatar: string);
+  updateUserName(id: UUID, username: string);
   updatePassWord(id: UUID, password: string, currentPassword: string);
 }

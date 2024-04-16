@@ -4,7 +4,7 @@ import { UpdateHeroDto } from './dto/update-hero.dto';
 import { IHeroService } from './interface-hero.service';
 import { Hero } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
 import { Account, IAccountService } from 'src/account';
@@ -94,7 +94,10 @@ export class HeroService implements IHeroService {
     return heros;
   }
   async searchHeroMarket(request: SearchHeroDto) {
-    console.log(request);
+    const items_per_page = Number(request.items_per_page) || 5;
+    const page = Number(request.page) || 1;
+    const skip = (page - 1) * items_per_page;
+
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.innerJoin(Activity, 'activity', 'hero.id = activity.hero_id');
     queryBuilder.where('hero.status = :status', { status: Status.MARKET });
@@ -134,12 +137,28 @@ export class HeroService implements IHeroService {
       }
     }
 
-    const heros = await queryBuilder.getMany();
-    return heros;
+    const [heros, total] = await queryBuilder
+      .take(items_per_page)
+      .skip(skip)
+      .getManyAndCount();
+    const lastPage = Math.ceil(total / items_per_page);
+    const nextPage = page + 1 > lastPage ? null : page + 1;
+    const prevPage = page - 1 < 1 ? null : page - 1;
+    return {
+      data: heros,
+      total,
+      currentPage: page,
+      nextPage,
+      prevPage,
+      lastPage,
+    };
   }
   // Hero đã sở hữu
   async searchHeroInventory(request: SearchHeroDto, idAccount: string) {
-    console.log(request);
+    const items_per_page = Number(request.items_per_page) || 5;
+    const page = Number(request.page) || 1;
+    const skip = (page - 1) * items_per_page;
+
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.where('hero.account_id = :id', { id: idAccount });
     queryBuilder.andWhere('hero.status = :status', {
@@ -178,8 +197,21 @@ export class HeroService implements IHeroService {
       }
     }
 
-    const heros = await queryBuilder.getMany();
-    return heros;
+    const [heros, total] = await queryBuilder
+      .take(items_per_page)
+      .skip(skip)
+      .getManyAndCount();
+    const lastPage = Math.ceil(total / items_per_page);
+    const nextPage = page + 1 > lastPage ? null : page + 1;
+    const prevPage = page - 1 < 1 ? null : page - 1;
+    return {
+      data: heros,
+      total,
+      currentPage: page,
+      nextPage,
+      prevPage,
+      lastPage,
+    };
   }
   remove(id: number): Promise<Hero> {
     throw new Error('Method not implemented.');
@@ -205,6 +237,7 @@ export class HeroService implements IHeroService {
     if (hero.account_id === accountId) {
       return { message: "You can't buy your hero" };
     }
+
     if (hero.status == Status.INVENTORY) {
       return { message: 'Hero Not Selling' };
     }
