@@ -1,6 +1,16 @@
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { Account, IAccountService, LoginDto, RegisterAccountDto } from 'src/account';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
+import {
+  Account,
+  IAccountService,
+  LoginDto,
+  RegisterAccountDto,
+} from 'src/account';
 import { DITokens } from 'src/di';
 import * as bcrypt from 'bcrypt';
 import { UUID, randomUUID } from 'crypto';
@@ -28,7 +38,11 @@ export class AuthService implements IAuthService {
       userByEmail.password,
     );
     if (!isMatch) throw new BadRequestException('Invalid password');
-    const tokens = await this.getTokens(userByEmail.id, userByEmail.username,userByEmail.email);
+    const tokens = await this.getTokens(
+      userByEmail.id,
+      userByEmail.username,
+      userByEmail.email,
+    );
     await this.updateRefreshToken(userByEmail.id, tokens.refreshToken);
     return {
       msg: 'User has been login!',
@@ -36,13 +50,15 @@ export class AuthService implements IAuthService {
     };
   }
   async register(requestsBody: RegisterAccountDto) {
-    const userByUserName = await this.accountService.findByUserName(
+    const userByUserName = await this.accountService.findByUserNameRegister(
       requestsBody.username,
     );
     if (userByUserName) {
       throw new BadRequestException('Username already exists');
     }
-    const user = await this.accountService.findByEmail(requestsBody.email);
+    const user = await this.accountService.findByEmailRegister(
+      requestsBody.email,
+    );
     if (user) {
       throw new BadRequestException('Email already registered');
     }
@@ -56,7 +72,11 @@ export class AuthService implements IAuthService {
     // save to db
     const saveUser = await this.accountService.create(requestsBody);
     this.accountService.save(saveUser);
-    const tokens = await this.getTokens(saveUser.id, saveUser.username,saveUser.email);
+    const tokens = await this.getTokens(
+      saveUser.id,
+      saveUser.username,
+      saveUser.email,
+    );
     await this.updateRefreshToken(saveUser.id, tokens.refreshToken);
     return {
       message: 'Register successfully',
@@ -73,8 +93,8 @@ export class AuthService implements IAuthService {
       refresh_token: hashedRefreshToken,
     });
   }
- 
-  async getTokens(id: string, username: string,email:string) {
+
+  async getTokens(id: string, username: string, email: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -108,16 +128,16 @@ export class AuthService implements IAuthService {
   async logout(userId: UUID) {
     return this.accountService.update(userId, { refresh_token: null });
   }
-  async refreshTokens(email:string,refreshToken:string) {
+  async refreshTokens(email: string, refreshToken: string) {
     const user = await this.accountService.findByEmail(email);
     if (!user || !user.refresh_token)
       throw new ForbiddenException('Access Denied');
     const refreshTokenMatches = await bcrypt.compare(
       refreshToken,
-      user.refresh_token
+      user.refresh_token,
     );
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
-    const tokens = await this.getTokens(user.id, user.username,user.email);
+    const tokens = await this.getTokens(user.id, user.username, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
