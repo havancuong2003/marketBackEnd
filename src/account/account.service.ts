@@ -8,9 +8,7 @@ import { IAccountService } from './interface-account.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { DITokens } from 'src/di';
-import { IMailService } from 'src/mail';
+
 import { CreateAccountDto, UpdateAccountDto } from './dto';
 import { UUID } from 'crypto';
 
@@ -39,10 +37,10 @@ export class AccountService implements IAccountService {
   async update(id: UUID, updateUserDto: UpdateAccountDto) {
     return this.accountRepository.update(id, updateUserDto);
   }
-  create(create:CreateAccountDto){
+  create(create: CreateAccountDto) {
     return this.accountRepository.create(create);
   }
-  save(account:Account){
+  save(account: Account) {
     return this.accountRepository.save(account);
   }
 }

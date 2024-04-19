@@ -11,13 +11,12 @@ import { Account } from './account/entities/account.entity';
 import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
-import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth';
 @Global()
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -28,7 +27,7 @@ import { AuthModule } from './auth';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE_NAME'),
         entities: [Account, Activity, Hero, HistoryTran],
-        synchronize: true,
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
@@ -37,7 +36,6 @@ import { AuthModule } from './auth';
     ActivityModule,
     HeroModule,
     HistoryTransModule,
-    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

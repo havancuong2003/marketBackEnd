@@ -4,7 +4,6 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { Account, AccountModule, AccountService } from 'src/account';
 import { DITokens } from 'src/di';
-import { MailService } from 'src/mail';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
@@ -15,16 +14,16 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmModule.forFeature([Account]),
     PassportModule,
     AccountModule,
-    JwtModule.register({
-    }),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
     { provide: DITokens.AuthService, useClass: AuthService },
-    { provide: DITokens.MailService, useClass: MailService },
+
     { provide: DITokens.AccountService, useClass: AccountService },
-    AccessTokenStrategy,RefreshTokenStrategy
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
   ],
 })
 export class AuthModule {}
