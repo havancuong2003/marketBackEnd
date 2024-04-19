@@ -9,8 +9,9 @@ import { IHistoryTransService } from './interface-history-trans.service';
 @Injectable()
 export class HistoryTransService implements IHistoryTransService {
   constructor(
-    @InjectRepository(HistoryTran) private historyTranRepository: Repository<HistoryTran>,
-  ){};
+    @InjectRepository(HistoryTran)
+    private historyTranRepository: Repository<HistoryTran>,
+  ) {}
 
   create(createHistoryTranDto: CreateHistoryTranDto) {
     return this.historyTranRepository.save(createHistoryTranDto);
@@ -21,7 +22,7 @@ export class HistoryTransService implements IHistoryTransService {
   }
 
   findOne(id: number) {
-    console.log("find one");
+    console.log('find one');
     return `This action returns a #${id} historyTran`;
   }
 
@@ -33,17 +34,15 @@ export class HistoryTransService implements IHistoryTransService {
     return `This action removes a #${id} historyTran`;
   }
 
-  async getTopTrans(id:number){
+  async getTopTrans(id: number) {
     console.log(id);
-    const queryBuilder = this.historyTranRepository.createQueryBuilder('historyTran');
+    const queryBuilder =
+      this.historyTranRepository.createQueryBuilder('historyTran');
     queryBuilder.where('historyTran.hero_id = :id', { id: id });
     queryBuilder.orderBy('historyTran.time', 'DESC');
-    queryBuilder.limit(5);
-    
+    //queryBuilder.limit(5);
+
     const trans = await queryBuilder.getMany();
     return trans;
-
   }
-  
-
 }

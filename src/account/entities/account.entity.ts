@@ -1,43 +1,50 @@
-import { Exclude } from "class-transformer";
-import { UUID } from "crypto";
-import { Activity } from "src/activity/entities/activity.entity";
-import { Hero } from "src/hero/entities/hero.entity";
-import { HistoryTran } from "src/history-trans/entities/history-tran.entity";
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Exclude } from 'class-transformer';
+import { UUID } from 'crypto';
+import { Activity } from 'src/activity/entities/activity.entity';
+import { Hero } from 'src/hero/entities/hero.entity';
+import { HistoryTran } from 'src/history-trans/entities/history-tran.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 
-@Entity({name:"Account"})
+@Entity({ name: 'Account' })
 export class Account {
-    @PrimaryColumn()
-    id:UUID;
-    @Column({nullable:true})
-    avatar:string;
+  @PrimaryColumn()
+  id: UUID;
+  @Column({ nullable: true })
+  avatar: string;
 
-    @Column({unique:true})
-    username:string;
-    
-    @Exclude()
-    @Column()
-    password:string;
+  @Column({ unique: true })
+  username: string;
 
-    @Column({unique:true})
-    email:string;
+  @Exclude()
+  @Column()
+  password: string;
 
-    @Column({default:0})
-    balance:number;
+  @Column({ unique: true })
+  email: string;
 
-    @Exclude()
-    @Column({nullable:true})
-    refresh_token:string;
-    
-    @OneToMany(()=>HistoryTran,(ht)=>ht.account_buyer) 
-    historyTranSeller:HistoryTran[]
+  @Column({ default: 0 })
+  balance: number;
 
-    @OneToMany(()=>HistoryTran,(ht)=>ht.account_seller)
-    historyTranBuyer:HistoryTran[]
+  @Exclude()
+  @Column({ nullable: true })
+  refresh_token: string;
 
-    @OneToMany(()=>Hero,(h)=>h.account)
-    heroes:Hero[];
-    
-    @OneToMany(()=>Activity,(a)=>a.account)
-    activities:Activity[]
+  @OneToMany(() => HistoryTran, (ht) => ht.account_buyer)
+  historyTranSeller: HistoryTran[];
+
+  @OneToMany(() => HistoryTran, (ht) => ht.account_seller)
+  historyTranBuyer: HistoryTran[];
+
+  @OneToMany(() => Hero, (h) => h.account)
+  heroes: Hero[];
+
+  @OneToMany(() => Activity, (a) => a.account)
+  activities: Activity[];
 }

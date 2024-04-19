@@ -7,10 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { DITokens } from 'src/di';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([HistoryTran]),
-  ],
+  imports: [TypeOrmModule.forFeature([HistoryTran])],
   controllers: [HistoryTransController],
-  providers: [HistoryTransService,{ provide : DITokens.HistoryTransService, useClass: HistoryTransService }],
+  providers: [
+    HistoryTransService,
+    { provide: DITokens.HistoryTransService, useClass: HistoryTransService },
+  ],
 })
 export class HistoryTransModule {}

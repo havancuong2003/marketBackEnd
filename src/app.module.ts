@@ -16,7 +16,7 @@ import { AuthModule } from './auth';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -24,11 +24,9 @@ import { AuthModule } from './auth';
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'), 
-        database: configService.get('DB_DATABASE_NAME'), 
-        entities: [
-          Account,Activity,Hero,HistoryTran
-        ],
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE_NAME'),
+        entities: [Account, Activity, Hero, HistoryTran],
         synchronize: false,
       }),
       inject: [ConfigService],
