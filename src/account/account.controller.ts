@@ -31,12 +31,12 @@ export class AccountController {
     return this.accountService.findAll();
   }
   @UseGuards(AccessTokenGuard)
-  @Get("/showInformation")
+  @Get("/show-information")
   showInformation(@Req() req:Request){
     return this.accountService.informationAccount(req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Post("/updateUserName")
+  @Post("/update-username")
   updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
     if(!updateUserDto.username){
       return {
@@ -47,7 +47,7 @@ export class AccountController {
     return this.accountService.updateUserName(req.user['id'], updateUserDto.username);
   }
   @UseGuards(AccessTokenGuard)
-  @Post("/updatePassWord")
+  @Post("/update-password")
   updatePassWord(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
     if(!updateUserDto.password){
       return {
