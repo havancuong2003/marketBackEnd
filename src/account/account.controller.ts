@@ -22,6 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'src/helper';
 import { extname } from 'path';
 
+
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -39,6 +40,7 @@ export class AccountController {
     return this.accountService.findAll();
   }
   @UseGuards(AccessTokenGuard)
+
   @Get("/show-information")
   showInformation(@Req() req:Request){
     return this.accountService.informationAccount(req.user['id']);
@@ -55,6 +57,7 @@ export class AccountController {
     );
   }
   @UseGuards(AccessTokenGuard)
+
   @Post('/update-password')
   async updatePassWord(
     @Req() req: Request,
@@ -65,7 +68,6 @@ export class AccountController {
        throw new  BadRequestException('password is required');
       
     }
-
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
       throw new  BadRequestException('password and repassword not match');
     }
@@ -118,6 +120,8 @@ export class AccountController {
     }
     if (!file) {
       throw new BadRequestException('File not found');
+
+   
     }
     return await this.accountService.updateAvatar(
       req.user['id'],
