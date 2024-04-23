@@ -23,7 +23,7 @@ import { storageConfig } from 'src/helper';
 import { extname } from 'path';
 
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import * as bcrypt from 'bcrypt';
+
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('/account')
 export class AccountController {

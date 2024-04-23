@@ -1,10 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query, UseGuards, Req } from '@nestjs/common';
 import { ActivityService } from './activity.service';
-import { CreateActivityDto } from './dto/create-activity.dto';
-import { UpdateActivityDto } from './dto/update-activity.dto';
-import { IActivityService } from './interface-activity.service';
-import { DITokens } from 'src/di';
-import { Activity } from './entities';
 import { AccessTokenGuard } from 'src/guard';
 import { Request } from 'express';
 
