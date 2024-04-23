@@ -12,4 +12,5 @@ export interface IAccountService {
   informationAccount(id:UUID);
   updateUserName(id:UUID,username:string)
   updatePassWord(id: UUID, password: string)
+  updateAvatar(id:UUID,avatar:string)
 }

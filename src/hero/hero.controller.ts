@@ -44,7 +44,7 @@ export class HeroController {
   //   return this.heroService.showListMarket(account.id);
   // }
   @Get('/show-market')
-  searchHeroMarket(@Body() request: SearchHeroDto) {
+  searchHeroMarket(@Query() request: SearchHeroDto) {
     return this.heroService.searchHeroMarket(request);
   }
   @UseGuards(AccessTokenGuard)
