@@ -15,6 +15,22 @@ export class ActivityService implements IActivityService {
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
   ) {}
+  async getActivities( event: string, account_id:UUID) {
+
+    console.log(event)
+    console.log(account_id)
+    const queryBuilder = this.activityRepository.createQueryBuilder('activity');
+    queryBuilder.where('activity.account_id = :id', { id: account_id });
+
+    if(event){
+     queryBuilder.andWhere('activity.event = :event', { event: event });
+    }
+
+    queryBuilder.orderBy('activity.time', 'DESC');
+
+    const activities = await queryBuilder.getMany();
+    return activities;
+  }
   createListMarket(hero_id: number, account_id: UUID, value: number) {
     return this.activityRepository
       .createQueryBuilder()

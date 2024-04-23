@@ -14,7 +14,7 @@ import { HistoryTran } from './history-trans/entities/history-tran.entity';
 import { AuthModule } from './auth';
 @Global()
 @Module({
-  imports: [
+  imports: [ 
     ConfigModule.forRoot({ isGlobal: true }),
     
     TypeOrmModule.forRootAsync({

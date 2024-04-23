@@ -8,8 +8,9 @@ import {
   Req,
   Body,
   Post,
-  UploadedFile,
+  UploadedFiles,
   BadRequestException,
+  UploadedFile,
 } from '@nestjs/common';
 
 import { IAccountService } from './interface-account.service';
@@ -20,6 +21,9 @@ import { UpdateAccountDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'src/helper';
 import { extname } from 'path';
+
+
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('/account')
@@ -57,49 +61,80 @@ export class AccountController {
   }
   @UseGuards(AccessTokenGuard)
 
-  @Post("/update-password")
-  updatePassWord(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
-    if(!updateUserDto.password){
+  @Post('/update-password')
+  async updatePassWord(
+    @Req() req: Request,
+    @Body() updateUserPassDto: UpdatePasswordDto,
+  ) {
+    if (!updateUserPassDto.password) {
       return {
         status: 400,
         message: 'password is required',
       };
     }
+    if (updateUserPassDto.password !== updateUserPassDto.repassword) {
+      return {
+        status: 400,
+        message: 'password and repassword not match',
+      };
+    }
+
+    if (updateUserPassDto.curentpassword === updateUserPassDto.password) {
+      return {
+        status: 400,
+        message: 'password not change',
+      };
+    }
+
+    if (updateUserPassDto.password !== updateUserPassDto.repassword) {
+      return {
+        status: 400,
+        message: 'password is required',
+      };
+    }
+
     return this.accountService.updatePassWord(
       req.user['id'],
-      updateUserDto.password,
+      updateUserPassDto.password,
+      updateUserPassDto.curentpassword,
     );
   }
 
   @UseGuards(AccessTokenGuard)
   @Post('/upload-avatar')
   @UseInterceptors(
-    FileInterceptor('avatar', { storage: storageConfig('avatar'),
-      fileFilter: (req,file,cb)=>{
-        const ext = extname(file.originalname)
-        const allowExtArr=['.png','.jpg','.jpeg']
-        if(!allowExtArr.includes(ext)){
-          req.fileValidationError='File not allow . Accepted file ext are : '+allowExtArr.toString()
-          cb(null,false)
-        }else{
-          const fileSize = parseInt(req.headers['content-length'])
-          if(fileSize>1024*1024*5){
-            req.fileValidationError = "File size is too large. Accepted file size is less than 5MB"
-            cb(null,false)
-          }else {
-            cb(null,true)
+    FileInterceptor('avatar', {
+      storage: storageConfig('avatar'),
+      fileFilter: (req, file, cb) => {
+        const ext = extname(file.originalname);
+        const allowExtArr = ['.png', '.jpg', '.jpeg'];
+        if (!allowExtArr.includes(ext)) {
+          req.fileValidationError =
+            'File not allow . Accepted file ext are : ' +
+            allowExtArr.toString();
+          cb(null, false);
+        } else {
+          const fileSize = parseInt(req.headers['content-length']);
+          if (fileSize > 1024 * 1024 * 5) {
+            req.fileValidationError =
+              'File size is too large. Accepted file size is less than 5MB';
+            cb(null, false);
+          } else {
+            cb(null, true);
           }
         }
-      }
-     }),
+      },
+    }),
   )
   async uploadFile(@Req() req: any, @UploadedFile() file: Express.Multer.File) {
     console.log('upload file: ', file);
-    if(req.fileValidationError){
-      throw new BadRequestException(req.fileValidationError)
+    if (req.fileValidationError) {
+      throw new BadRequestException(req.fileValidationError);
     }
-    if(!file){
-      throw new BadRequestException('File not found')
+    if (!file) {
+      throw new BadRequestException('File not found');
+
+   
     }
     return await this.accountService.updateAvatar(
       req.user['id'],

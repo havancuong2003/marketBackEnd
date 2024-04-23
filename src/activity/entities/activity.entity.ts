@@ -6,8 +6,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 
 import { CreateDateColumn } from 'typeorm';
   
-
-
 @Entity({ name: "Activity" })
 export class Activity {
     @PrimaryGeneratedColumn()

@@ -31,9 +31,17 @@ export class AccountService implements IAccountService {
     if (!user) throw new Error('user not found');
     return user;
   }
-  async updatePassWord(id: UUID, password: string) {
+  async updatePassWord(id: UUID, password: string, currentPassword:string) {
     const saltOrRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltOrRounds);
+
+    const user = await this.accountRepository.findOneBy({ id: id });
+    const currentPasswordHash = await bcrypt.hash(currentPassword, saltOrRounds);
+
+    if(!await bcrypt.compare(currentPassword, user.password)){
+      throw new BadRequestException('current password not match');
+    }
+    
+    const passwordHash =  await bcrypt.hash(password, saltOrRounds);
     return this.accountRepository.update(id, { password: passwordHash });
   }
   async update(id: UUID, updateUserDto: UpdateAccountDto) {
@@ -50,8 +58,6 @@ export class AccountService implements IAccountService {
   }
   async updateUserName(id:UUID,username:string){
     const user = await this.accountRepository.findOneBy({ username: username });
-    console.log("updateUserName ",username);
-    console.log("updateUserName ",user);
     if(user){
       throw new BadRequestException('username already exist');
     }

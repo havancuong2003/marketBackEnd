@@ -8,4 +8,5 @@ export interface IActivityService {
     createDelistMarket(hero_id:number,account_id:UUID)
     createBuyHero(activityBuyHeroDto: ActivityBuyHeroDto)
     createSellHero(activitySellHeroDto:ActivitySellHeroDto) 
+    getActivities(event:string, account_id:UUID);
 }

@@ -9,9 +9,9 @@ import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
 import { Account, IAccountService } from 'src/account';
 import { DITokens } from 'src/di';
-import { Status } from 'src/constraint';
+import { SortInventory, SortMarket, Status } from 'src/constains';
 import { IHistoryTransService } from 'src/history-trans';
-import { IActivityService } from 'src/activity';
+import { Activity, IActivityService } from 'src/activity';
 
 @Injectable()
 export class HeroService implements IHeroService {
@@ -98,6 +98,7 @@ export class HeroService implements IHeroService {
     const page = Number(request.page) || 1;
     const skip = (page - 1) * items_per_page;
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
+    queryBuilder.innerJoin(Activity, 'activity', 'hero.id = activity.hero_id');
     queryBuilder.where('hero.status = :status', { status: Status.MARKET });
     // Kiểm tra nếu có rank được cung cấp
     if (request.rank) {
@@ -113,7 +114,26 @@ export class HeroService implements IHeroService {
     if (request.class) {
       queryBuilder.andWhere('hero.class = :class', { class: request.class });
     }
+    if (request.sortMarket) {
+      if (request.sortMarket === SortMarket.HIGHESTPRICE) {
+        queryBuilder.orderBy('hero.price', 'ASC');
+      } else if (request.sortMarket === SortMarket.LOWESTPRICE) {
+        queryBuilder.orderBy('hero.price', 'DESC');
+      } else if (request.sortMarket === SortMarket.RANKASC) {
+        queryBuilder.orderBy('hero.rank', 'ASC');
+      } else if (request.sortMarket === SortMarket.RANKDESC) {
+        queryBuilder.orderBy('hero.rank', 'DESC');
+      } else if (request.sortMarket === SortMarket.RECENTLY) {
+        queryBuilder
 
+          //.select('hero.*')
+          .addSelect('MAX(activity.time)', 'max_time')
+          .andWhere('hero.status = :status', { status: 1 })
+          .andWhere('activity.event = :event', { event: 'LIST' })
+          .groupBy('hero.id')
+          .orderBy('max_time', 'DESC');
+      }
+    }
     const [heros, total] = await queryBuilder
       .take(items_per_page)
       .skip(skip)
@@ -156,6 +176,22 @@ export class HeroService implements IHeroService {
       queryBuilder.andWhere('hero.class = :class', { class: request.class });
     }
 
+    // Kiểm tra nếu có sort được cung cấp
+    if (request.sortInventory) {
+      if (request.sortInventory === SortInventory.PRICEASC) {
+        queryBuilder.orderBy('hero.price', 'ASC');
+      } else if (request.sortInventory === SortInventory.PRICEDESC) {
+        queryBuilder.orderBy('hero.price', 'DESC');
+      } else if (request.sortInventory === SortInventory.HIGHESTID) {
+        queryBuilder.orderBy('hero.id', 'DESC');
+      } else if (request.sortInventory === SortInventory.LOWESTID) {
+        queryBuilder.orderBy('hero.id', 'ASC');
+      } else if (request.sortInventory === SortInventory.RANKDESC) {
+        queryBuilder.orderBy('hero.rank', 'DESC');
+      } else if (request.sortInventory === SortInventory.RANKASC) {
+        queryBuilder.orderBy('hero.rank', 'ASC');
+      }
+    }
     const [heros, total] = await queryBuilder
       .take(items_per_page)
       .skip(skip)
@@ -193,10 +229,15 @@ export class HeroService implements IHeroService {
     console.log(account);
     console.log(hero);
 
+
+    if (hero.account_id === accountId) {
+      return { message: "You can't buy your hero" };
+    }
+
     if (hero.status == Status.INVENTORY) {
       return { message: 'Hero Not Selling' };
     }
-    if (account.money < hero.price) {
+    if (account.balance < hero.price) {
       return { message: 'Not enough money' };
     }
 
@@ -204,20 +245,21 @@ export class HeroService implements IHeroService {
     this.accountService.update(accountId, account);
 
     const seller = hero.account_id;
-    const sellPrice = hero.price;
 
     hero.account_id = account.id;
     hero.status = Status.INVENTORY;
-    hero.price = 0;
     this.heroRepository.update(heroId, hero);
     await this.activityService.createBuyHero({
-      value: sellPrice,
+
+      value: hero.price,
+
       hero_id: heroId,
       account_id: accountId,
       opposite_user_id: seller,
     });
     await this.activityService.createSellHero({
-      value: sellPrice,
+      value: hero.price,
+
       hero_id: heroId,
       account_id: seller,
       opposite_user_id: accountId,
@@ -225,7 +267,7 @@ export class HeroService implements IHeroService {
 
     // inset to historyTrans
     return this.historyTransService.create({
-      value: sellPrice,
+      value: hero.price,
       seller: seller,
       buyer: account.id,
       hero_id: heroId,
