@@ -36,14 +36,15 @@ export class AccountController {
     return this.accountService.findAll();
   }
   @UseGuards(AccessTokenGuard)
-  @Get('/showInformation')
-  showInformation(@Req() req: Request) {
+
+  @Get("/show-information")
+  showInformation(@Req() req:Request){
     return this.accountService.informationAccount(req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Post('/updateUserName')
-  updateUserName(@Req() req: Request, @Body() updateUserDto: UpdateAccountDto) {
-    if (!updateUserDto.username) {
+  @Post("/update-username")
+  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+    if(!updateUserDto.username){
       return {
         status: 400,
         message: 'username is required',
@@ -55,9 +56,10 @@ export class AccountController {
     );
   }
   @UseGuards(AccessTokenGuard)
-  @Post('/updatePassWord')
-  updatePassWord(@Req() req: Request, @Body() updateUserDto: UpdateAccountDto) {
-    if (!updateUserDto.password) {
+
+  @Post("/update-password")
+  updatePassWord(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+    if(!updateUserDto.password){
       return {
         status: 400,
         message: 'password is required',
