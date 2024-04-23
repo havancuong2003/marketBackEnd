@@ -39,14 +39,14 @@ export class AccountController {
     return this.accountService.findAll();
   }
   @UseGuards(AccessTokenGuard)
-  @Get('/show-information')
-  showInformation(@Req() req: Request) {
+  @Get("/show-information")
+  showInformation(@Req() req:Request){
     return this.accountService.informationAccount(req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Post('/update-username')
-  updateUserName(@Req() req: Request, @Body() updateUserDto: UpdateAccountDto) {
-    if (!updateUserDto.username) {
+  @Post("/update-username")
+  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+    if(!updateUserDto.username){
       return {
         status: 400,
         message: 'username is required',
