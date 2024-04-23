@@ -47,10 +47,7 @@ export class AccountController {
   @Post("/update-username")
   updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
     if(!updateUserDto.username){
-      return {
-        status: 400,
-        message: 'username is required',
-      };
+      throw new  BadRequestException('username is required');
     }
     return this.accountService.updateUserName(
       req.user['id'],
@@ -64,31 +61,21 @@ export class AccountController {
     @Body() updateUserPassDto: UpdatePasswordDto,
   ) {
     if (!updateUserPassDto.password) {
-      return {
-        status: 400,
-        message: 'password is required',
-      };
+      
+       throw new  BadRequestException('password is required');
+      
     }
 
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      return {
-        status: 400,
-        message: 'password and repassword not match',
-      };
+      throw new  BadRequestException('password and repassword not match');
     }
 
     if (updateUserPassDto.curentpassword === updateUserPassDto.password) {
-      return {
-        status: 400,
-        message: 'password not change',
-      };
+      throw new  BadRequestException('password not change');
     }
 
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      return {
-        status: 400,
-        message: 'password is required',
-      };
+      throw new  BadRequestException('password is required');
     }
 
     return this.accountService.updatePassWord(
