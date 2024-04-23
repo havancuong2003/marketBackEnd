@@ -97,7 +97,6 @@ export class HeroService implements IHeroService {
     const items_per_page = Number(request.items_per_page) || 5;
     const page = Number(request.page) || 1;
     const skip = (page - 1) * items_per_page;
-
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.innerJoin(Activity, 'activity', 'hero.id = activity.hero_id');
     queryBuilder.where('hero.status = :status', { status: Status.MARKET });
@@ -115,7 +114,6 @@ export class HeroService implements IHeroService {
     if (request.class) {
       queryBuilder.andWhere('hero.class = :class', { class: request.class });
     }
-
     if (request.sortMarket) {
       if (request.sortMarket === SortMarket.HIGHESTPRICE) {
         queryBuilder.orderBy('hero.price', 'ASC');
@@ -136,7 +134,6 @@ export class HeroService implements IHeroService {
           .orderBy('max_time', 'DESC');
       }
     }
-
     const [heros, total] = await queryBuilder
       .take(items_per_page)
       .skip(skip)
@@ -158,7 +155,6 @@ export class HeroService implements IHeroService {
     const items_per_page = Number(request.items_per_page) || 5;
     const page = Number(request.page) || 1;
     const skip = (page - 1) * items_per_page;
-
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
     queryBuilder.where('hero.account_id = :id', { id: idAccount });
     queryBuilder.andWhere('hero.status = :status', {
@@ -196,7 +192,6 @@ export class HeroService implements IHeroService {
         queryBuilder.orderBy('hero.rank', 'ASC');
       }
     }
-
     const [heros, total] = await queryBuilder
       .take(items_per_page)
       .skip(skip)
@@ -234,6 +229,7 @@ export class HeroService implements IHeroService {
     console.log(account);
     console.log(hero);
 
+
     if (hero.account_id === accountId) {
       return { message: "You can't buy your hero" };
     }
@@ -254,13 +250,16 @@ export class HeroService implements IHeroService {
     hero.status = Status.INVENTORY;
     this.heroRepository.update(heroId, hero);
     await this.activityService.createBuyHero({
+
       value: hero.price,
+
       hero_id: heroId,
       account_id: accountId,
       opposite_user_id: seller,
     });
     await this.activityService.createSellHero({
       value: hero.price,
+
       hero_id: heroId,
       account_id: seller,
       opposite_user_id: accountId,

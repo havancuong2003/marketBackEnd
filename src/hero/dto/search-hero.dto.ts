@@ -1,3 +1,4 @@
+
 import { IsAlpha, IsInt, Length, Min } from 'class-validator';
 import { Class, Race, Rank, SortInventory, SortMarket } from 'src/constains';
 
@@ -10,3 +11,4 @@ export class SearchHeroDto {
   sortInventory: SortInventory;
   sortMarket: SortMarket;
 }
+
