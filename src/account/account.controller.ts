@@ -47,17 +47,17 @@ export class AccountController {
   }
   @UseGuards(AccessTokenGuard)
   @Post("/update-username")
-  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+  async updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
     if(!updateUserDto.username){
-      return {
-        status: 400,
-        message: 'username is required',
-      };
+      throw new  BadRequestException('username is required');
     }
-    return this.accountService.updateUserName(
+    await this.accountService.updateUserName(
       req.user['id'],
       updateUserDto.username,
     );
+    return {
+      message: 'Update username successfully',
+    }
   }
   @UseGuards(AccessTokenGuard)
 
@@ -67,37 +67,30 @@ export class AccountController {
     @Body() updateUserPassDto: UpdatePasswordDto,
   ) {
     if (!updateUserPassDto.password) {
-      return {
-        status: 400,
-        message: 'password is required',
-      };
+      
+       throw new  BadRequestException('password is required');
+      
     }
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      return {
-        status: 400,
-        message: 'password and repassword not match',
-      };
+      throw new  BadRequestException('password and repassword not match');
     }
 
     if (updateUserPassDto.curentpassword === updateUserPassDto.password) {
-      return {
-        status: 400,
-        message: 'password not change',
-      };
+      throw new  BadRequestException('password not change');
     }
 
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      return {
-        status: 400,
-        message: 'password is required',
-      };
+      throw new  BadRequestException('password is required');
     }
 
-    return this.accountService.updatePassWord(
+    await this.accountService.updatePassWord(
       req.user['id'],
       updateUserPassDto.password,
       updateUserPassDto.curentpassword,
     );
+    return {
+      message : 'Update password successfully',
+    }
   }
 
   @UseGuards(AccessTokenGuard)
@@ -136,9 +129,12 @@ export class AccountController {
 
    
     }
-    return await this.accountService.updateAvatar(
+    await this.accountService.updateAvatar(
       req.user['id'],
       file.destination + '/' + file.filename,
     );
+    return {
+      message: 'Upload avatar successfully',
+    }
   }
 }
