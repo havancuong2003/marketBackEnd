@@ -22,7 +22,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'src/helper';
 import { extname } from 'path';
 
-
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -40,16 +39,15 @@ export class AccountController {
     return this.accountService.findAll();
   }
   @UseGuards(AccessTokenGuard)
-
-  @Get("/show-information")
-  showInformation(@Req() req:Request){
+  @Get('/show-information')
+  showInformation(@Req() req: Request) {
     return this.accountService.informationAccount(req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Post("/update-username")
-  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
-    if(!updateUserDto.username){
-      throw new  BadRequestException('username is required');
+  @Post('/update-username')
+  updateUserName(@Req() req: Request, @Body() updateUserDto: UpdateAccountDto) {
+    if (!updateUserDto.username) {
+      throw new BadRequestException('username is required');
     }
     return this.accountService.updateUserName(
       req.user['id'],
@@ -57,27 +55,24 @@ export class AccountController {
     );
   }
   @UseGuards(AccessTokenGuard)
-
   @Post('/update-password')
   async updatePassWord(
     @Req() req: Request,
     @Body() updateUserPassDto: UpdatePasswordDto,
   ) {
     if (!updateUserPassDto.password) {
-      
-       throw new  BadRequestException('password is required');
-      
+      throw new BadRequestException('password is required');
     }
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      throw new  BadRequestException('password and repassword not match');
+      throw new BadRequestException('password and repassword not match');
     }
 
     if (updateUserPassDto.curentpassword === updateUserPassDto.password) {
-      throw new  BadRequestException('password not change');
+      throw new BadRequestException('password not change');
     }
 
     if (updateUserPassDto.password !== updateUserPassDto.repassword) {
-      throw new  BadRequestException('password is required');
+      throw new BadRequestException('password is required');
     }
 
     return this.accountService.updatePassWord(
@@ -120,8 +115,6 @@ export class AccountController {
     }
     if (!file) {
       throw new BadRequestException('File not found');
-
-   
     }
     return await this.accountService.updateAvatar(
       req.user['id'],
