@@ -47,14 +47,17 @@ export class AccountController {
   }
   @UseGuards(AccessTokenGuard)
   @Post("/update-username")
-  updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
+  async updateUserName(@Req() req:Request, @Body() updateUserDto: UpdateAccountDto){
     if(!updateUserDto.username){
       throw new  BadRequestException('username is required');
     }
-    return this.accountService.updateUserName(
+    await this.accountService.updateUserName(
       req.user['id'],
       updateUserDto.username,
     );
+    return {
+      message: 'Update username successfully',
+    }
   }
   @UseGuards(AccessTokenGuard)
 
@@ -80,11 +83,14 @@ export class AccountController {
       throw new  BadRequestException('password is required');
     }
 
-    return this.accountService.updatePassWord(
+    await this.accountService.updatePassWord(
       req.user['id'],
       updateUserPassDto.password,
       updateUserPassDto.curentpassword,
     );
+    return {
+      message : 'Update password successfully',
+    }
   }
 
   @UseGuards(AccessTokenGuard)
@@ -123,9 +129,12 @@ export class AccountController {
 
    
     }
-    return await this.accountService.updateAvatar(
+    await this.accountService.updateAvatar(
       req.user['id'],
       file.destination + '/' + file.filename,
     );
+    return {
+      message: 'Upload avatar successfully',
+    }
   }
 }

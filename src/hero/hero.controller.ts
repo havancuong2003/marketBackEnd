@@ -65,7 +65,10 @@ export class HeroController {
     @Body('price', ParseIntPipe) price: number,
     @Req() req: Request,
   ) {
-    return this.heroService.updatePriceMarket(id, price, req.user['id']);
+    this.heroService.updatePriceMarket(id, price, req.user['id']);
+    return {
+      message : 'Update price successfully'
+    }
   }
   @UseGuards(AccessTokenGuard)
   @Patch(':id/selling')
@@ -81,7 +84,10 @@ export class HeroController {
     await this.heroService.updatePriceMarket(id, price, userId); 
 
     const createActivityDto = new CreateActivityDto();
-    return this.activityService.createListMarket(id,userId,price)
+    this.activityService.createListMarket(id,userId,price);
+    return {
+      message : 'list hero to market successfully'
+    }
     
   }
   @UseGuards(AccessTokenGuard)
@@ -91,8 +97,11 @@ export class HeroController {
     @Req() req: Request,
   ) {
     const userId = req.user['id']
-     await this.heroService.updateStatus(id, 0, userId);
-     return await this.activityService.createDelistMarket(id,userId)
+    await this.heroService.updateStatus(id, 0, userId);
+    await this.activityService.createDelistMarket(id,userId);
+    return {
+      message : 'Delist hero successfully'
+    }
   }
   
   @Get(':id/detail')
@@ -108,8 +117,11 @@ export class HeroController {
 
   @UseGuards(AccessTokenGuard)
   @Patch(':id/buy')
-  buy( @Param('id') id: number,@Req() req:Request) {
-    return this.heroService.buy(id, req.user['id']);
+  async buy( @Param('id') id: number,@Req() req:Request) {
+     await this.heroService.buy(id, req.user['id']);
+     return {
+      message : 'Buy hero successfully'
+     }
   }
 
   
