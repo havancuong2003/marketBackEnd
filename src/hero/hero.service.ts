@@ -203,13 +203,13 @@ export class HeroService implements IHeroService {
     console.log(hero);
 
     if (hero.account_id === accountId) {
-      return { message: "You can't buy your hero" };
+      throw new BadRequestException("You can't buy your hero");
     }
     if (hero.status == Status.INVENTORY) {
-      return { message: 'Hero Not Selling' };
+      throw new BadRequestException('Hero Not Selling');
     }
     if (account.balance < hero.price) {
-      return { message: 'Not enough money' };
+      throw new BadRequestException('Not enough money');
     }
 
     account.balance = account.balance - hero.price;
