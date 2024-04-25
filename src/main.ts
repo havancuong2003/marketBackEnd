@@ -13,11 +13,12 @@ function openApi(app: INestApplication<any>) {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
   openApi(app);

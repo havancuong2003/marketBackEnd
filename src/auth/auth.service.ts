@@ -13,7 +13,6 @@ import {
 } from 'src/account';
 import { DITokens } from 'src/di';
 import * as bcrypt from 'bcrypt';
-
 import { UUID, randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { IAuthService } from './interface-auth.service';
@@ -23,7 +22,6 @@ export class AuthService implements IAuthService {
     @Inject(DITokens.AccountService)
     private readonly accountService: IAccountService,
     private jwtService: JwtService,
-
     private configService: ConfigService,
   ) {}
   async login(requestsBody: LoginDto) {
@@ -78,7 +76,6 @@ export class AuthService implements IAuthService {
       saveUser.email,
     );
     await this.updateRefreshToken(saveUser.id, tokens.refreshToken);
-
     return {
       message: 'Register successfully',
       tokens,
@@ -105,7 +102,7 @@ export class AuthService implements IAuthService {
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: '60s',
+          expiresIn: '1h',
         },
       ),
       this.jwtService.signAsync(

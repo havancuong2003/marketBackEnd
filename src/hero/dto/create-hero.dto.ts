@@ -1,5 +1,6 @@
 import { UUID } from "crypto";
-import { Class, Race, Rank } from "../entities";
+import { Class, Race, Rank } from "src/constains";
+
 
 export class CreateHeroDto {
     id:number;

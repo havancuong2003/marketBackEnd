@@ -20,7 +20,6 @@ import { PassportModule } from '@nestjs/passport';
   providers: [
     AuthService,
     { provide: DITokens.AuthService, useClass: AuthService },
-
     { provide: DITokens.AccountService, useClass: AccountService },
     AccessTokenStrategy,
     RefreshTokenStrategy,

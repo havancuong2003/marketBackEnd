@@ -1,34 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Query, UseGuards, Req } from '@nestjs/common';
 import { ActivityService } from './activity.service';
-import { CreateActivityDto } from './dto/create-activity.dto';
-import { UpdateActivityDto } from './dto/update-activity.dto';
+import { AccessTokenGuard } from 'src/guard';
+import { Request } from 'express';
 
 @Controller('activity')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
-
-  @Post()
-  create(@Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(createActivityDto);
-  }
-
+  
+  @UseGuards(AccessTokenGuard)
   @Get()
-  findAll() {
-    return this.activityService.findAll();
+  getActivity( @Req() req: Request ) {
+    return this.activityService.getActivities( "", req.user['id']);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.activityService.findOne(+id);
-  }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto) {
-    return this.activityService.update(+id, updateActivityDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.activityService.remove(+id);
+ // @UseGuards(AuthGuard)
+  @UseGuards(AccessTokenGuard)
+  @Get(':event')
+  getActivityByEvent( @Param('event') event: string, @Req() req: Request ) {
+    return this.activityService.getActivities( event, req.user['id']);
   }
 }

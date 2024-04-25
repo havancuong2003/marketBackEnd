@@ -1,3 +1,4 @@
+import { CreateActivityDto } from './../activity/dto/create-activity.dto';
 import { IHeroService } from './interface-hero.service';
 import {
   Controller,
@@ -6,7 +7,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Inject,
   UseGuards,
   Query,
@@ -16,15 +16,16 @@ import {
 import { CreateHeroDto } from './dto/create-hero.dto';
 import { DITokens } from 'src/di';
 import { AccessTokenGuard } from 'src/guard';
-import { Account } from 'src/account';
-import { currentUser } from 'src/decorator';
 import { SearchHeroDto } from './dto';
 import { Request } from 'express';
+import { IActivityService } from 'src/activity';
 
 @Controller('hero')
 export class HeroController {
   constructor(
     @Inject(DITokens.HeroService) private heroService: IHeroService,
+    @Inject(DITokens.ActivityService)
+    private readonly activityService: IActivityService,
   ) {}
   @Post('create')
   create(@Body() createHeroDto: CreateHeroDto) {
@@ -42,21 +43,78 @@ export class HeroController {
   //   console.log("listMarket: ",account.id);
   //   return this.heroService.showListMarket(account.id);
   // }
-  @Post('/listMarket')
-  searchHeroMarket(@Body() request: SearchHeroDto) {
+  @Get('/show-market')
+  searchHeroMarket(@Query() request: SearchHeroDto) {
     return this.heroService.searchHeroMarket(request);
   }
   @UseGuards(AccessTokenGuard)
-  @Get('/checkOwner')
+  @Get('/check-owner')
   checkOwner(@Query('id', ParseIntPipe) idHero: number, @Req() req: Request) {
-    console.log('idHero', idHero);
+    console.log('id-hero', idHero);
     return this.heroService.checkHeroOwner(idHero, req.user['id']);
   }
   @UseGuards(AccessTokenGuard)
-  @Post('/inventory')
-  searchHeroInventory(@Body() requestBody: SearchHeroDto, @Req() req: Request) {
-    console.log(req.user['id']);
+  @Get('/show-inventory')
+  searchHeroInventory(
+    @Query() requestBody: SearchHeroDto,
+    @Req() req: Request,
+  ) {
     return this.heroService.searchHeroInventory(requestBody, req.user['id']);
+  }
+  @UseGuards(AccessTokenGuard)
+  @Patch(':id/update-price')
+  async updatePriceMarket(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('price', ParseIntPipe) price: number,
+    @Req() req: Request,
+  ) {
+    this.heroService.updatePriceMarket(id, price, req.user['id']);
+    return {
+      message: 'Update price successfully',
+    };
+  }
+  @UseGuards(AccessTokenGuard)
+  @Patch(':id/selling')
+  async updateStatusSell(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('price', ParseIntPipe) price: number,
+    @Req() req: Request,
+  ) {
+    console.log(id);
+    const userId = req.user['id'];
+    await this.heroService.updateStatus(id, 1, userId);
+    // wait status change to 1
+    await this.heroService.updatePriceMarket(id, price, userId);
+
+    const createActivityDto = new CreateActivityDto();
+    this.activityService.createListMarket(id, userId, price);
+    return {
+      message: 'list hero to market successfully',
+    };
+  }
+  @UseGuards(AccessTokenGuard)
+  @Patch(':id/delist')
+  async updateDelist(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: Request,
+  ) {
+    const userId = req.user['id'];
+    await this.heroService.updateStatus(id, 0, userId);
+    await this.activityService.createDelistMarket(id, userId);
+    return {
+      message: 'Delist hero successfully',
+    };
+  }
+
+  @Get(':id/detail')
+  detailHero(@Param('id') id: number) {
+    return this.heroService.findOne(id);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get(':id/status')
+  statusHero(@Param('id') hero_id: number, @Req() req: Request) {
+    return this.heroService.statusHero(hero_id, req.user['id']);
   }
 
   @UseGuards(AccessTokenGuard)

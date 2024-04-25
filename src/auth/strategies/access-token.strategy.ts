@@ -1,7 +1,6 @@
-import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Observable } from 'rxjs';
 import { IAccountService } from 'src/account';
 import { DITokens } from 'src/di';
 

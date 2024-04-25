@@ -7,7 +7,7 @@ import { UUID } from 'crypto';
 export class HistoryTran {
     @PrimaryGeneratedColumn()
     id:number;
-    @Column()
+    @Column({type:'datetime'})
     @CreateDateColumn()
     time:Date;
     @Column()

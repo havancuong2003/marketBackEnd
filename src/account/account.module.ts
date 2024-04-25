@@ -5,8 +5,6 @@ import { Account } from './entities/account.entity';
 import { AccountService } from './account.service';
 import { DITokens } from 'src/di';
 
-import { JwtModule } from '@nestjs/jwt';
-
 @Module({
   imports: [TypeOrmModule.forFeature([Account])],
   providers: [

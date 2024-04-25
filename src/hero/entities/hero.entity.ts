@@ -1,28 +1,10 @@
 import { UUID } from "crypto";
 import { Account } from "src/account/entities/account.entity";
 import { Activity } from "src/activity/entities/activity.entity";
+import { Class, Race, Rank } from "src/constains";
 import { HistoryTran } from "src/history-trans/entities/history-tran.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-export enum Rank {
-    WARRIOR="WARRIOR",
-    WARMONGER = "WARMONGER",
-    OVERSEER = "OVERSEER",
-    CHIEFTAIN ="CHIEFTAIN",
-}
-export enum Race {
-    ANTUK ="ANTUK ",
-    KRAKEE  = "KRAKEE ",
-    MANTAH  = "MANTAH ",
-    MONTAK  ="MONTAK ",
-    MUU="MUU",
-}
-export enum Class{
-    AIR  ="AIR",
-    MAGE   = "MAGE",
-    MELEE   = "MELEE",
-    RANGE   ="RANGE",
-    TANKER="TANKER",
-}
+
 @Entity({name:"Hero"})
 export class Hero {
     @PrimaryGeneratedColumn()
