@@ -118,10 +118,7 @@ export class HeroController {
   @UseGuards(AccessTokenGuard)
   @Patch(':id/buy')
   async buy( @Param('id') id: number,@Req() req:Request) {
-     await this.heroService.buy(id, req.user['id']);
-     return {
-      message : 'Buy hero successfully'
-     }
+     return await this.heroService.buy(id, req.user['id']);
   }
 
   
