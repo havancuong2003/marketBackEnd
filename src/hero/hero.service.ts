@@ -230,14 +230,15 @@ export class HeroService implements IHeroService {
     console.log(hero);
 
     if (hero.account_id === accountId) {
-      return { message: "You can't buy your hero" };
+
+      throw new BadRequestException("You can't buy your hero");
     }
 
     if (hero.status == Status.INVENTORY) {
-      return { message: 'Hero Not Selling' };
+      throw new BadRequestException('You can not buy this hero');
     }
     if (account.balance < hero.price) {
-      return { message: 'Not enough money' };
+      throw new BadRequestException('Not enough money');
     }
 
     account.balance = account.balance - hero.price;
@@ -267,11 +268,14 @@ export class HeroService implements IHeroService {
     });
 
     // inset to historyTrans
-    return this.historyTransService.create({
+     await this.historyTransService.create({
       value: hero.price,
       seller: seller,
       buyer: account.id,
       hero_id: heroId,
     });
+    return {
+      message : 'Buy hero successfully'
+    }
   }
 }

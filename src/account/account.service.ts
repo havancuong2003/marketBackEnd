@@ -68,5 +68,12 @@ export class AccountService implements IAccountService {
     return await this.accountRepository.update(id,{avatar:avatar});
   }
 
-  
+  async findByUserNameRegister(name: string) {
+    const user = await this.accountRepository.findOneBy({ username: name });
+    return user;
+  }
+  async findByEmailRegister(email: string) {
+    const user = await this.accountRepository.findOneBy({ email: email });
+    return user;
+  }
 }

@@ -36,13 +36,15 @@ export class AuthService implements IAuthService {
     };
   }
   async register(requestsBody: RegisterAccountDto) {
-    const userByUserName = await this.accountService.findByUserName(
+    const userByUserName = await this.accountService.findByUserNameRegister(
       requestsBody.username,
     );
     if (userByUserName) {
       throw new BadRequestException('Username already exists');
     }
-    const user = await this.accountService.findByEmail(requestsBody.email);
+    const user = await this.accountService.findByEmailRegister(
+      requestsBody.email,
+    );
     if (user) {
       throw new BadRequestException('Email already registered');
     }
@@ -56,7 +58,11 @@ export class AuthService implements IAuthService {
     // save to db
     const saveUser = await this.accountService.create(requestsBody);
     this.accountService.save(saveUser);
-    const tokens = await this.getTokens(saveUser.id, saveUser.username,saveUser.email);
+    const tokens = await this.getTokens(
+      saveUser.id,
+      saveUser.username,
+      saveUser.email,
+    );
     await this.updateRefreshToken(saveUser.id, tokens.refreshToken);
     return {
       message: 'Register successfully',
