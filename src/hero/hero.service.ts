@@ -229,7 +229,6 @@ export class HeroService implements IHeroService {
     console.log(account);
     console.log(hero);
 
-
     if (hero.account_id === accountId) {
       return { message: "You can't buy your hero" };
     }
@@ -242,15 +241,17 @@ export class HeroService implements IHeroService {
     }
 
     account.balance = account.balance - hero.price;
-    this.accountService.update(accountId, account);
+    await this.accountService.update(accountId, account);
 
     const seller = hero.account_id;
+    const account_seller = await this.accountService.informationAccount(seller);
+    account_seller.balance = account_seller.balance + hero.price;
+    await this.accountService.update(seller, account_seller);
 
     hero.account_id = account.id;
     hero.status = Status.INVENTORY;
     this.heroRepository.update(heroId, hero);
     await this.activityService.createBuyHero({
-
       value: hero.price,
 
       hero_id: heroId,
