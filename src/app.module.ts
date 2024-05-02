@@ -15,6 +15,7 @@ import { AuthModule } from './auth';
 @Global()
 @Module({
   imports: [ 
+    
     ConfigModule.forRoot({ isGlobal: true }),
     
     TypeOrmModule.forRootAsync({
@@ -29,7 +30,7 @@ import { AuthModule } from './auth';
         entities: [
           Account,Activity,Hero,HistoryTran
         ],
-        synchronize: false,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
