@@ -223,7 +223,6 @@ export class HeroService implements IHeroService {
     console.log(account);
     console.log(hero);
 
-
     if (hero.account_id === accountId) {
 
       throw new BadRequestException("You can't buy your hero");
