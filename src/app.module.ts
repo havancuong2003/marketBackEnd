@@ -30,13 +30,13 @@ import { AuthModule } from './auth';
         entities: [
           Account,Activity,Hero,HistoryTran
         ],
-        synchronize: true,
+        synchronize: false ,
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     AccountModule,
-    ActivityModule,
+    ActivityModule, 
     HeroModule,
     HistoryTransModule,
   ],
