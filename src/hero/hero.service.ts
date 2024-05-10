@@ -230,7 +230,6 @@ export class HeroService implements IHeroService {
     console.log(hero);
 
     if (hero.account_id === accountId) {
-
       throw new BadRequestException("You can't buy your hero");
     }
 
@@ -268,14 +267,14 @@ export class HeroService implements IHeroService {
     });
 
     // inset to historyTrans
-     await this.historyTransService.create({
+    await this.historyTransService.create({
       value: hero.price,
       seller: seller,
       buyer: account.id,
       hero_id: heroId,
     });
     return {
-      message : 'Buy hero successfully'
-    }
+      message: 'Buy hero successfully',
+    };
   }
 }
