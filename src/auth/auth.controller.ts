@@ -1,10 +1,8 @@
 
-import { currentUser } from 'src/decorator';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Req, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Inject, Req, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { DITokens } from 'src/di';
 import { IAuthService } from './interface-auth.service';
-import { Account, LoginDto, RegisterAccountDto } from 'src/account';
-import { AuthGuard } from '@nestjs/passport';
+import { LoginDto, RegisterAccountDto } from 'src/account';
 import { AccessTokenGuard, RefreshTokenGuard } from 'src/guard';
 import { Request } from 'express';
 
@@ -30,10 +28,9 @@ export class AuthController {
     this.authService.logout(req.user.id);
   }
   @UseGuards(RefreshTokenGuard)
-  @Get('refresh')
+  @Get('/refresh')
   refreshTokens(@Req() req: Request) {
     const email = req.user['email'];
-    console.log(email)
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(email, refreshToken);
   }

@@ -152,7 +152,7 @@ export class HeroService implements IHeroService {
   }
   // Hero đã sở hữu
   async searchHeroInventory(request: SearchHeroDto, idAccount: string) {
-    const items_per_page = Number(request.items_per_page) || 5;
+    const items_per_page = Number(request.items_per_page) || 2;
     const page = Number(request.page) || 1;
     const skip = (page - 1) * items_per_page;
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
@@ -196,16 +196,10 @@ export class HeroService implements IHeroService {
       .take(items_per_page)
       .skip(skip)
       .getManyAndCount();
-    const lastPage = Math.ceil(total / items_per_page);
-    const nextPage = page + 1 > lastPage ? null : page + 1;
-    const prevPage = page - 1 < 1 ? null : page - 1;
     return {
       data: heros,
-      total,
+      totalItems:total,
       currentPage: page,
-      nextPage,
-      prevPage,
-      lastPage,
     };
   }
   remove(id: number): Promise<Hero> {
@@ -243,24 +237,26 @@ export class HeroService implements IHeroService {
     }
 
     account.balance = account.balance - hero.price;
-    this.accountService.update(accountId, account);
-
+    this.accountService.update(accountId, {balance:account.balance});
     const seller = hero.account_id;
-
+    console.log(seller);
+    const accountSeller = await this.accountService.informationAccount(seller);
+    accountSeller.balance = accountSeller.balance + hero.price;
+    await this.accountService.update(seller, {balance:accountSeller.balance});
     hero.account_id = account.id;
     hero.status = Status.INVENTORY;
-    this.heroRepository.update(heroId, hero);
+    await this.heroRepository.update(heroId, {
+      account_id: account.id,
+      status: Status.INVENTORY,
+    });
     await this.activityService.createBuyHero({
-
       value: hero.price,
-
       hero_id: heroId,
       account_id: accountId,
       opposite_user_id: seller,
     });
     await this.activityService.createSellHero({
       value: hero.price,
-
       hero_id: heroId,
       account_id: seller,
       opposite_user_id: accountId,
