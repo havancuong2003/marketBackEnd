@@ -9,7 +9,7 @@ import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
 import { Account, IAccountService } from 'src/account';
 import { DITokens } from 'src/di';
-import { SortInventory, SortMarket, Status } from 'src/constains';
+import { Class, Race, Rank, SortInventory, SortMarket, Status } from 'src/constains';
 import { IHistoryTransService } from 'src/history-trans';
 import { Activity, IActivityService } from 'src/activity';
 
