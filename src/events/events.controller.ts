@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+// import { Controller, Post, Body } from '@nestjs/common';
+// import { EventsGateway } from './events.gateway';
 
-@Controller('events')
-export class EventsController {}
+// @Controller('messages')
+// export class EventsController {
+//   constructor(private eventsGateway: EventsGateway) {}
+
+//   @Post('messages')
+//   sendMessage(@Body() data: { message: string }) {
+//     this.eventsGateway.server.emit('messages', data.message);
+//   }
+// }

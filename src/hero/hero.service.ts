@@ -152,7 +152,7 @@ export class HeroService implements IHeroService {
   }
   // Hero đã sở hữu
   async searchHeroInventory(request: SearchHeroDto, idAccount: string) {
-    const items_per_page = Number(request.items_per_page) || 2;
+    const items_per_page = Number(request.items_per_page) || 4;
     const page = Number(request.page) || 1;
     const skip = (page - 1) * items_per_page;
     const queryBuilder = this.heroRepository.createQueryBuilder('hero');
