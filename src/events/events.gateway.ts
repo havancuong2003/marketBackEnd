@@ -1,4 +1,3 @@
-import { OnModuleInit } from '@nestjs/common';
 import {
   MessageBody,
   OnGatewayConnection,
