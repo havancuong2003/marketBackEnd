@@ -12,9 +12,6 @@ import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
 import { AuthModule } from './auth';
-import { EventsGateway } from './events/events.gateway';
-// import { EventsController } from './events/events.controller';
-import { EventsGatewayModule } from './events/events.module';
 @Global()
 @Module({
   imports: [ 
@@ -33,19 +30,17 @@ import { EventsGatewayModule } from './events/events.module';
         entities: [
           Account,Activity,Hero,HistoryTran
         ],
-        synchronize: false ,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     AccountModule,
-    ActivityModule, 
+    ActivityModule,
     HeroModule,
     HistoryTransModule,
-    EventsGatewayModule
-    
   ],
   controllers: [AppController],
-  providers: [AppService, EventsGatewayModule],
+  providers: [AppService],
 })
 export class AppModule {}

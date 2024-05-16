@@ -7,7 +7,7 @@ import { Activity } from './entities';
 import { Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { Event } from 'src/constains';
-import { ActivityBuyHeroDto, ActivitySellHeroDto, SearchActivitiesDto } from './dto';
+import { ActivityBuyHeroDto, ActivitySellHeroDto } from './dto';
 
 @Injectable()
 export class ActivityService implements IActivityService {
@@ -15,34 +15,21 @@ export class ActivityService implements IActivityService {
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
   ) {}
-  async getActivities( account_id:UUID,request:SearchActivitiesDto ) {
-    const items_per_page = Number(request.items_per_page) || 10;
-    const page = Number(request.page) || 1;
-    const skip = (page - 1) * items_per_page;
+  async getActivities( event: string, account_id:UUID) {
+
+    console.log(event)
+    console.log(account_id)
     const queryBuilder = this.activityRepository.createQueryBuilder('activity');
     queryBuilder.where('activity.account_id = :id', { id: account_id });
-    if(request.event === Event.SALE){
-      queryBuilder.andWhere('activity.event = :event', {event: Event.SALE})
+
+    if(event){
+     queryBuilder.andWhere('activity.event = :event', { event: event });
     }
-    if(request.event === Event.PURCHASE){
-      queryBuilder.andWhere('activity.event = :event', {event: Event.PURCHASE})
-    }
-    if(request.event === Event.LIST){
-      queryBuilder.andWhere('activity.event = :event', {event: Event.LIST})
-    }
-    if(request.event === Event.DELIST){
-      queryBuilder.andWhere('activity.event = :event', {event: Event.DELIST})
-    }
+
     queryBuilder.orderBy('activity.time', 'DESC');
-    const [activities, total] = await queryBuilder
-      .take(items_per_page)
-      .skip(skip)
-      .getManyAndCount();
-    console.log(total)
-    return {
-      records: activities,
-      totalRecords:total
-    };
+
+    const activities = await queryBuilder.getMany();
+    return activities;
   }
   createListMarket(hero_id: number, account_id: UUID, value: number) {
     return this.activityRepository
