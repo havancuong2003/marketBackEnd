@@ -12,8 +12,6 @@ import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
 import { AuthModule } from './auth';
-import { EventsGateway } from './events/events.gateway';
-import { EventsController } from './events/events.controller';
 import { EventsGatewayModule } from './events/events.module';
 
 @Global()
@@ -46,7 +44,7 @@ import { EventsGatewayModule } from './events/events.module';
     EventsGatewayModule
 
   ],
-  controllers: [AppController, EventsController],
+  controllers: [AppController],
   providers: [AppService, EventsGatewayModule],
 })
 export class AppModule {}
