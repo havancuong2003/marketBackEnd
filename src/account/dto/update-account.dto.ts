@@ -3,6 +3,7 @@ import { CreateAccountDto } from './create-account.dto';
 import { UUID } from 'crypto';
 
 export class UpdateAccountDto {
+    id?:UUID;
 
     username?:string;
     
