@@ -15,6 +15,7 @@ import { AuthModule } from './auth';
 import { EventsGateway } from './events/events.gateway';
 import { EventsController } from './events/events.controller';
 import { EventsGatewayModule } from './events/events.module';
+
 @Global()
 @Module({
   imports: [ 
@@ -42,8 +43,10 @@ import { EventsGatewayModule } from './events/events.module';
     ActivityModule,
     HeroModule,
     HistoryTransModule,
+    EventsGatewayModule
+
   ],
   controllers: [AppController, EventsController],
-  providers: [AppService, EventsGateway],
+  providers: [AppService, EventsGatewayModule],
 })
 export class AppModule {}
