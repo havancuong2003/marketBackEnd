@@ -12,12 +12,13 @@ import { Activity } from './activity/entities/activity.entity';
 import { Hero } from './hero/entities/hero.entity';
 import { HistoryTran } from './history-trans/entities/history-tran.entity';
 import { AuthModule } from './auth';
+import { SocketsGateway } from './sockets/sockets.gateway';
+import { SocketsGatewayModule } from './sockets/sockets.gateway.module';
 @Global()
 @Module({
-  imports: [ 
-    
+  imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -25,22 +26,21 @@ import { AuthModule } from './auth';
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'), 
-        database: configService.get('DB_DATABASE_NAME'), 
-        entities: [
-          Account,Activity,Hero,HistoryTran
-        ],
-        synchronize: false ,
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE_NAME'),
+        entities: [Account, Activity, Hero, HistoryTran],
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     AccountModule,
-    ActivityModule, 
+    ActivityModule,
     HeroModule,
     HistoryTransModule,
+    SocketsGatewayModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SocketsGatewayModule],
 })
 export class AppModule {}
