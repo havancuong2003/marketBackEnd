@@ -9,15 +9,15 @@ export class ActivityController {
   
   @UseGuards(AccessTokenGuard)
   @Get()
-  getActivity( @Req() req: Request ) {
-    return this.activityService.getActivities( "", req.user['id']);
+  getActivity(@Query() search, @Req() req: Request  ) {
+    return this.activityService.getActivities(  req.user['id'],search);
   }
 
 
  // @UseGuards(AuthGuard)
-  @UseGuards(AccessTokenGuard)
-  @Get(':event')
-  getActivityByEvent( @Param('event') event: string, @Req() req: Request ) {
-    return this.activityService.getActivities( event, req.user['id']);
-  }
+  // @UseGuards(AccessTokenGuard)
+  // @Get()
+  // getActivityByEvent( @Param('event') event: string, @Req() req: Request ) {
+  //   return this.activityService.getActivities( event, req.user['id']);
+  // }
 }
