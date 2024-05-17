@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { IAccountService, LoginDto, RegisterAccountDto } from 'src/account';
+import { Account, IAccountService, LoginDto, RegisterAccountDto } from 'src/account';
 import { DITokens } from 'src/di';
 import * as bcrypt from 'bcrypt';
 import { UUID, randomUUID } from 'crypto';
