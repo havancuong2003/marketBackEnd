@@ -16,10 +16,9 @@ import { EventsGatewayModule } from './events/events.module';
 
 @Global()
 @Module({
-  imports: [ 
-    
+  imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -38,6 +37,7 @@ import { EventsGatewayModule } from './events/events.module';
     }),
     AuthModule,
     AccountModule,
+    ActivityModule,
     ActivityModule,
     HeroModule,
     HistoryTransModule,
