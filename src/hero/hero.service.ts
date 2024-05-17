@@ -9,7 +9,7 @@ import { UUID } from 'crypto';
 import { SearchHeroDto } from './dto';
 import { Account, IAccountService } from 'src/account';
 import { DITokens } from 'src/di';
-import { SortInventory, SortMarket, Status } from 'src/constains';
+import { Class, Race, Rank, SortInventory, SortMarket, Status } from 'src/constains';
 import { IHistoryTransService } from 'src/history-trans';
 import { Activity, IActivityService } from 'src/activity';
 
@@ -196,16 +196,10 @@ export class HeroService implements IHeroService {
       .take(items_per_page)
       .skip(skip)
       .getManyAndCount();
-    const lastPage = Math.ceil(total / items_per_page);
-    const nextPage = page + 1 > lastPage ? null : page + 1;
-    const prevPage = page - 1 < 1 ? null : page - 1;
     return {
       data: heros,
-      total,
+      totalItems:total,
       currentPage: page,
-      nextPage,
-      prevPage,
-      lastPage,
     };
   }
   remove(id: number): Promise<Hero> {
@@ -229,9 +223,7 @@ export class HeroService implements IHeroService {
     console.log(account);
     console.log(hero);
 
-
     if (hero.account_id === accountId) {
-
       throw new BadRequestException("You can't buy your hero");
     }
 
@@ -243,38 +235,40 @@ export class HeroService implements IHeroService {
     }
 
     account.balance = account.balance - hero.price;
-    this.accountService.update(accountId, account);
-
+    this.accountService.update(accountId, {balance:account.balance});
     const seller = hero.account_id;
-
+    console.log(seller);
+    const accountSeller = await this.accountService.informationAccount(seller);
+    accountSeller.balance = accountSeller.balance + hero.price;
+    await this.accountService.update(seller, {balance:accountSeller.balance});
     hero.account_id = account.id;
     hero.status = Status.INVENTORY;
-    this.heroRepository.update(heroId, hero);
+    await this.heroRepository.update(heroId, {
+      account_id: account.id,
+      status: Status.INVENTORY,
+    });
     await this.activityService.createBuyHero({
-
       value: hero.price,
-
       hero_id: heroId,
       account_id: accountId,
       opposite_user_id: seller,
     });
     await this.activityService.createSellHero({
       value: hero.price,
-
       hero_id: heroId,
       account_id: seller,
       opposite_user_id: accountId,
     });
 
     // inset to historyTrans
-     await this.historyTransService.create({
+    await this.historyTransService.create({
       value: hero.price,
       seller: seller,
       buyer: account.id,
       hero_id: heroId,
     });
     return {
-      message : 'Buy hero successfully'
-    }
+      message: 'Buy hero successfully',
+    };
   }
 }
